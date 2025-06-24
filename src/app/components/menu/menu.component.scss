@@ -1,0 +1,54 @@
+.futuristic-menu {
+  --background: rgba(20, 20, 30, 0.8);
+  backdrop-filter: blur(12px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  color: #00ffe7;
+  font-weight: 600;
+}
+
+.glass-toolbar {
+  --background: rgba(15, 15, 25, 0.7);
+  backdrop-filter: blur(10px);
+  color: #00ffd5;
+  font-weight: bold;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+  letter-spacing: 1px;
+}
+
+.menu-item {
+  --background: transparent;
+  color: #00d0c9;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  margin: 4px 8px;
+
+  ion-icon {
+    color: #00ffe7;
+    font-size: 22px;
+    margin-right: 12px;
+  }
+
+  &:hover {
+    background: rgba(0, 255, 230, 0.15);
+    color: #00fff0;
+    cursor: pointer;
+    transform: translateX(5px);
+    transition: all 0.25s ease-in-out;
+  }
+}
+
+.logout-item {
+  color: #ff4c4c;
+  font-weight: 700;
+
+  ion-icon {
+    color: #ff4c4c;
+  }
+
+  &:hover {
+    background: rgba(255, 76, 76, 0.25);
+    color: #ff6a6a;
+    transform: translateX(5px);
+    transition: all 0.25s ease-in-out;
+  }
+}

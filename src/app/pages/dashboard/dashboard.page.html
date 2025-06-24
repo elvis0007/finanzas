@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar color="dark" class="glass-toolbar">
+    <ion-buttons slot="start">
+      <ion-menu-button color="light"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Dashboard</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding futuristic-bg">
+
+  <!-- Resumen financiero -->
+  <ion-card class="glass-card">
+    <ion-card-header>
+      <ion-card-title>📊 Resumen financiero</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><strong>Ingresos:</strong> <span class="income">{{ ingresos | currency }}</span></p>
+      <p><strong>Gastos:</strong> <span class="expense">{{ gastos | currency }}</span></p>
+      <p><strong>Balance:</strong> <span [class.positive]="balance >= 0" [class.negative]="balance < 0">{{ balance | currency }}</span></p>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Gráfico por categoría -->
+  <ion-card class="glass-card">
+    <ion-card-header>
+      <ion-card-title>📈 Gráfico por categoría</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <canvas baseChart [data]="pieChart" [type]="pieChartType"></canvas>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Gráfico mensual -->
+  <ion-card class="glass-card">
+    <ion-card-header>
+      <ion-card-title>📅 Ingresos y Gastos por mes</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <canvas baseChart [data]="barChart" [options]="barChartOptions" [type]="barChartType"></canvas>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Exportar datos -->
+  <ion-card class="glass-card">
+    <ion-card-header>
+      <ion-card-title>🚀 Exportar Datos</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-button expand="block" color="warning" shape="round" class="neon-btn" (click)="exportarPDF()">📄 Exportar PDF</ion-button>
+      <ion-button expand="block" color="tertiary" shape="round" class="neon-btn" (click)="exportarCSV()">📊 Exportar Excel</ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
