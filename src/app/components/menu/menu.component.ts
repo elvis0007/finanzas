@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { logOutOutline, homeOutline, listOutline, personOutline } from 'ionicons/icons';
-import { AuthService } from '../../services/auth.service'; // ✅ Importación necesaria
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-menu',
@@ -14,7 +14,7 @@ import { AuthService } from '../../services/auth.service'; // ✅ Importación n
     RouterModule,
   ],
 })
-export class MenuComponent {
+export class MenuComponent implements OnInit {
   icons = {
     home: homeOutline,
     transactions: listOutline,
@@ -22,10 +22,24 @@ export class MenuComponent {
     logout: logOutOutline,
   };
 
+  @Output() themeToggle = new EventEmitter<boolean>();
+  darkMode: boolean = false;
+
   constructor(
-    private authService: AuthService, // ✅ Aquí defines el servicio
+    private authService: AuthService,
     private router: Router
   ) {}
+
+  ngOnInit() {
+    const stored = localStorage.getItem('theme');
+    this.darkMode = stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  }
+
+  onToggleTheme(event: any) {
+    const checked = event.detail.checked;
+    this.darkMode = checked;
+    this.themeToggle.emit(checked);
+  }
 
   async logout() {
     try {

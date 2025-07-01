@@ -17,7 +17,32 @@
     <ion-card-content>
       <p><strong>Ingresos:</strong> <span class="income">{{ ingresos | currency }}</span></p>
       <p><strong>Gastos:</strong> <span class="expense">{{ gastos | currency }}</span></p>
-      <p><strong>Balance:</strong> <span [class.positive]="balance >= 0" [class.negative]="balance < 0">{{ balance | currency }}</span></p>
+      <p><strong>Balance:</strong>
+        <span [class.positive]="balance >= 0" [class.negative]="balance < 0">{{ balance | currency }}</span>
+      </p>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Totales adicionales -->
+  <ion-card class="glass-card">
+    <ion-card-header>
+      <ion-card-title>📋 Totales Generales</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col><strong>Transacciones:</strong></ion-col>
+          <ion-col>{{ totalTransacciones }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col><strong>Pagos Pendientes:</strong></ion-col>
+          <ion-col>{{ totalPendientes }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col><strong>Pagos Hechos:</strong></ion-col>
+          <ion-col>{{ totalHechos }}</ion-col>
+        </ion-row>
+      </ion-grid>
     </ion-card-content>
   </ion-card>
 
@@ -47,8 +72,13 @@
       <ion-card-title>🚀 Exportar Datos</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-button expand="block" color="warning" shape="round" class="neon-btn" (click)="exportarPDF()">📄 Exportar PDF</ion-button>
-      <ion-button expand="block" color="tertiary" shape="round" class="neon-btn" (click)="exportarCSV()">📊 Exportar Excel</ion-button>
+      <ion-button expand="block" color="primary" shape="round" (click)="exportarResumenPDF()">
+        📄 Exportar Resumen Completo PDF
+      </ion-button>
+      <ion-button expand="block" color="medium" shape="round" (click)="exportarResumenExcel()">
+        📊 Exportar Resumen Completo Excel
+      </ion-button>
     </ion-card-content>
   </ion-card>
+
 </ion-content>

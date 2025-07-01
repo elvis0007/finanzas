@@ -1,16 +1,11 @@
 <ion-header translucent>
   <ion-toolbar color="dark" class="glass-toolbar">
     <ion-buttons slot="start">
-        <ion-menu-button color="light"></ion-menu-button>
+      <ion-menu-button color="light"></ion-menu-button>
     </ion-buttons>
     <ion-title>📊 Transacciones</ion-title>
   </ion-toolbar>
 </ion-header>
-
-
-
-
-
 
 <ion-content class="ion-padding futuristic-bg">
 
@@ -22,6 +17,7 @@
 
     <ion-card-content>
       <form [formGroup]="addForm" (ngSubmit)="addMovement()">
+
         <ion-item>
           <ion-icon name="cash-outline" slot="start"></ion-icon>
           <ion-label position="floating">Monto</ion-label>
@@ -54,10 +50,10 @@
 
         <ion-item>
           <ion-label>Tipo</ion-label>
-          <ion-segment formControlName="type">
-            <ion-segment-button value="income">Ingreso</ion-segment-button>
-            <ion-segment-button value="expense">Gasto</ion-segment-button>
-          </ion-segment>
+          <ion-select formControlName="type" placeholder="Selecciona tipo">
+            <ion-select-option value="income">Ingreso</ion-select-option>
+            <ion-select-option value="expense">Gasto</ion-select-option>
+          </ion-select>
         </ion-item>
 
         <ion-item>
@@ -96,7 +92,6 @@
             <ion-select-option value="comida">Comida</ion-select-option>
             <ion-select-option value="transporte">Transporte</ion-select-option>
             <ion-select-option value="salud">Salud</ion-select-option>
-            <!-- más categorías -->
           </ion-select>
         </ion-item>
       </form>
@@ -112,21 +107,26 @@
       <ion-item-sliding *ngFor="let mov of filteredMovements$ | async">
         <ion-item>
           <ion-label>
-            <h2>{{ mov.description }} - {{ mov.amount | currency }}</h2>
-            <p>{{ mov.category }} - {{ mov.type === 'income' ? 'Ingreso' : 'Gasto' }} - {{ mov.date | date: 'shortDate' }}</p>
+            <h2>
+              {{ mov.description }} - {{ mov.amount | currency }}
+            </h2>
+            <p>
+              {{ mov.category }} - 
+              {{ mov.type === 'income' ? 'Ingreso' : 'Gasto' }} - 
+              {{ mov.date | date: 'shortDate' }}
+            </p>
           </ion-label>
           <ion-buttons slot="end" class="action-buttons">
-  <ion-button class="edit-btn" fill="outline" shape="round" (click)="editMovement(mov)">
-    <ion-icon name="create-outline" slot="start"></ion-icon>
-    Editar
-  </ion-button>
+            <ion-button class="edit-btn" fill="outline" shape="round" (click)="editMovement(mov)">
+              <ion-icon name="create-outline" slot="start"></ion-icon>
+              Editar
+            </ion-button>
 
-  <ion-button class="delete-btn" fill="outline" shape="round" color="danger" (click)="deleteMovement(mov.id)">
-    <ion-icon name="trash-outline" slot="start"></ion-icon>
-    Eliminar
-  </ion-button>
-</ion-buttons>
-
+            <ion-button class="delete-btn" fill="outline" shape="round" color="danger" (click)="deleteMovement(mov.id)">
+              <ion-icon name="trash-outline" slot="start"></ion-icon>
+              Eliminar
+            </ion-button>
+          </ion-buttons>
         </ion-item>
       </ion-item-sliding>
     </ion-list>

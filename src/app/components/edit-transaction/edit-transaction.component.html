@@ -1,0 +1,52 @@
+<ion-header translucent>
+  <ion-toolbar color="dark">
+    <ion-title>Editar Transacción</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="form">
+
+    <ion-item>
+      <ion-label position="floating">Monto</ion-label>
+      <ion-input type="number" formControlName="amount"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Descripción</ion-label>
+      <ion-input formControlName="description"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Categoría</ion-label>
+      <ion-select formControlName="category">
+        <ion-select-option value="comida">Comida</ion-select-option>
+        <ion-select-option value="transporte">Transporte</ion-select-option>
+        <ion-select-option value="salud">Salud</ion-select-option>
+        <ion-select-option value="educacion">Educación</ion-select-option>
+        <ion-select-option value="otros">Otros</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Tipo</ion-label>
+      <ion-segment formControlName="type">
+        <ion-segment-button value="income">Ingreso</ion-segment-button>
+        <ion-segment-button value="expense">Gasto</ion-segment-button>
+      </ion-segment>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Fecha</ion-label>
+      <ion-datetime formControlName="date" display-format="DD/MM/YYYY"></ion-datetime>
+    </ion-item>
+
+    <ion-button expand="block" color="success" (click)="save()">Guardar Cambios</ion-button>
+
+  </form>
+</ion-content>

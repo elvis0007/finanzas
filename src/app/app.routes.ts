@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { MenuComponent } from './components/menu/menu.component';
-import { AuthGuard } from './guards/auth.guard'; 
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -23,6 +23,12 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/profile/profile.page').then(m => m.ProfilePage),
       },
+      {
+        path: 'pending-payments',
+        loadComponent: () =>
+          import('./pages/pending-payments/pending-payments.page').then(m => m.PendingPaymentsPage),
+      },
+
       {
         path: '',
         redirectTo: 'dashboard',

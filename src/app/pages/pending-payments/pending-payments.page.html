@@ -1,0 +1,84 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>📅 Pagos por Hacer</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- Formulario para agregar pago pendiente -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>➕ Nuevo Pago</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form [formGroup]="addForm" (ngSubmit)="addPagoPendiente()">
+        <ion-item>
+          <ion-label position="floating">Monto</ion-label>
+          <ion-input type="number" formControlName="amount"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Descripción</ion-label>
+          <ion-input type="text" formControlName="description"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Categoría</ion-label>
+          <ion-select formControlName="category" placeholder="Seleccione">
+            <ion-select-option value="comida">Comida</ion-select-option>
+            <ion-select-option value="transporte">Transporte</ion-select-option>
+            <ion-select-option value="salud">Salud</ion-select-option>
+            <ion-select-option value="educacion">Educación</ion-select-option>
+            <ion-select-option value="otros">Otros</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Fecha límite</ion-label>
+          <ion-datetime formControlName="dueDate" displayFormat="DD/MM/YYYY"></ion-datetime>
+        </ion-item>
+
+        <ion-button expand="block" type="submit" [disabled]="addForm.invalid" color="success">
+          Guardar Pago
+        </ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Lista de pagos -->
+  <ion-list *ngIf="pagosPendientes$ | async as pagos">
+    <ion-item *ngFor="let pago of pagos">
+      <ion-label>
+        <h2>{{ pago.description }} - {{ pago.amount | currency }}</h2>
+        <p>
+          Categoría: {{ pago.category }}<br />
+          Fecha límite: {{ convertirFecha(pago.dueDate) | date: 'shortDate' }}
+        </p>
+      </ion-label>
+
+      <ion-buttons slot="end">
+        <ion-button fill="clear" color="success" (click)="marcarComoHecho(pago.id!)">
+          ✅ Hecho
+        </ion-button>
+
+        <ion-button fill="outline" color="warning" (click)="editarPago(pago)">
+          ✏️ Editar
+        </ion-button>
+
+
+        <ion-button fill="clear" color="danger" (click)="eliminarPago(pago.id!)">
+          🗑️ Eliminar
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <ion-note *ngIf="(pagosPendientes$ | async)?.length === 0" class="ion-text-center">
+    <p class="ion-padding-top">No tienes pagos pendientes 💤</p>
+  </ion-note>
+
+</ion-content>

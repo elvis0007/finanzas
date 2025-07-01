@@ -1,0 +1,51 @@
+<ion-header translucent>
+  <ion-toolbar color="primary">
+    <ion-title>Editar Pago</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <ion-item>
+      <ion-label position="floating">Monto</ion-label>
+      <ion-input type="number" formControlName="amount"></ion-input>
+    </ion-item>
+    <ion-note color="danger" *ngIf="form.get('amount')?.touched && form.get('amount')?.invalid">
+      Ingresa un monto válido.
+    </ion-note>
+
+    <ion-item>
+      <ion-label position="floating">Descripción</ion-label>
+      <ion-input formControlName="description"></ion-input>
+    </ion-item>
+    <ion-note color="danger" *ngIf="form.get('description')?.touched && form.get('description')?.invalid">
+      La descripción es requerida.
+    </ion-note>
+
+    <ion-item>
+      <ion-label>Categoría</ion-label>
+      <ion-select formControlName="category">
+        <ion-select-option value="comida">🍔 Comida</ion-select-option>
+        <ion-select-option value="transporte">🚗 Transporte</ion-select-option>
+        <ion-select-option value="salud">🩺 Salud</ion-select-option>
+        <ion-select-option value="educacion">📚 Educación</ion-select-option>
+        <ion-select-option value="otros">📦 Otros</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-note color="danger" *ngIf="form.get('category')?.touched && form.get('category')?.invalid">
+      Selecciona una categoría.
+    </ion-note>
+
+    <ion-item>
+      <ion-label position="floating">Fecha límite</ion-label>
+      <ion-datetime formControlName="dueDate" displayFormat="DD/MM/YYYY"></ion-datetime>
+    </ion-item>
+
+    <ion-button expand="block" type="submit" [disabled]="form.invalid" color="success">
+      Guardar Cambios
+    </ion-button>
+  </form>
+</ion-content>

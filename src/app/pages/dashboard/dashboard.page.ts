@@ -10,7 +10,6 @@ import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import FileSaver from 'file-saver';
 
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
@@ -22,6 +21,13 @@ export class DashboardPage implements OnInit {
   ingresos = 0;
   gastos = 0;
   balance = 0;
+  transacciones: any[] = [];
+  pagosPendientes: any[] = [];
+  pagosHechos: any[] = [];
+
+  totalTransacciones = 0;
+  totalPendientes = 0;
+  totalHechos = 0;
 
   pieChartLabels: string[] = [];
   pieChartData: number[] = [];
@@ -33,9 +39,7 @@ export class DashboardPage implements OnInit {
     { data: [], label: 'Ingresos' },
     { data: [], label: 'Gastos' }
   ];
-  barChartOptions: ChartOptions = {
-    responsive: true,
-  };
+  barChartOptions: ChartOptions = { responsive: true };
   barChartType: ChartType = 'bar';
   barChart: { labels: string[], datasets: ChartDataset[] } = { labels: [], datasets: [] };
 
@@ -48,6 +52,14 @@ export class DashboardPage implements OnInit {
     this.authService.getCurrentUser().then(user => {
       if (user) {
         this.movementsService.getMovements(user.uid).subscribe(movements => {
+          this.transacciones = movements.filter(m => m.type !== 'pago_pendiente');
+          this.pagosPendientes = movements.filter(m => m.type === 'pago_pendiente' && m.status === 'pendiente');
+          this.pagosHechos = movements.filter(m => m.type === 'pago_pendiente' && m.status === 'hecho');
+
+          this.totalTransacciones = this.transacciones.length;
+          this.totalPendientes = this.pagosPendientes.length;
+          this.totalHechos = this.pagosHechos.length;
+
           this.calcularResumen(movements);
           this.generarGraficos(movements);
         });
@@ -81,7 +93,7 @@ export class DashboardPage implements OnInit {
       const date = m.date instanceof Date ? m.date : m.date.toDate ? m.date.toDate() : new Date(m.date.seconds * 1000);
       const month = date.getMonth();
       if (m.type === 'income') ingresosPorMes[month] += m.amount;
-      else gastosPorMes[month] += m.amount;
+      else if (m.type === 'expense') gastosPorMes[month] += m.amount;
     });
 
     this.barChartLabels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
@@ -94,38 +106,85 @@ export class DashboardPage implements OnInit {
       datasets: this.barChartData
     };
   }
-  exportarPDF() {
+exportarResumenPDF() {
   const doc = new jsPDF();
-  doc.text('Resumen Financiero', 14, 10);
+  doc.text('Resumen Financiero Completo', 14, 10);
 
+  // Tabla resumen
   autoTable(doc, {
     startY: 20,
-    head: [['Ingresos', 'Gastos', 'Balance']],
+    head: [['Ingresos', 'Gastos', 'Balance', 'Transacciones', 'Pendientes', 'Hechos']],
     body: [[
       this.ingresos.toFixed(2),
       this.gastos.toFixed(2),
-      this.balance.toFixed(2)
+      this.balance.toFixed(2),
+      this.totalTransacciones,
+      this.totalPendientes,
+      this.totalHechos
     ]]
   });
 
-  doc.save('resumen_financiero.pdf');
-}
+  const resumenFinalY = (doc as any).lastAutoTable.finalY || 30;
 
-exportarCSV() {
-  const worksheetData = [
-    ['Mes', 'Ingresos', 'Gastos'],
-    ...this.barChartLabels.map((mes, i) => [
-      mes,
-      this.barChartData[0].data[i] || 0,
-      this.barChartData[1].data[i] || 0
+  // Transacciones
+  autoTable(doc, {
+    startY: resumenFinalY + 10,
+    head: [['Descripción', 'Categoría', 'Monto', 'Fecha', 'Tipo']],
+    body: this.transacciones.map(t => [
+      t.description,
+      t.category,
+      t.amount,
+      new Date(t.date?.seconds * 1000).toLocaleDateString(),
+      t.type
     ])
-  ];
+  });
 
-  const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-  const workbook = { Sheets: { 'Resumen': worksheet }, SheetNames: ['Resumen'] };
-  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-  const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
-  FileSaver.saveAs(data, 'resumen_financiero.xlsx');
+  const transFinalY = (doc as any).lastAutoTable.finalY || resumenFinalY + 30;
+
+  // Pagos por hacer (pendientes y hechos)
+  autoTable(doc, {
+    startY: transFinalY + 10,
+    head: [['Descripción', 'Categoría', 'Monto', 'Fecha límite', 'Estado']],
+    body: [...this.pagosPendientes, ...this.pagosHechos].map(p => [
+      p.description,
+      p.category,
+      p.amount,
+      new Date(p.dueDate?.seconds * 1000).toLocaleDateString(),
+      p.status
+    ])
+  });
+
+  doc.save('resumen_financiero_completo.pdf');
 }
 
+
+  exportarResumenExcel() {
+    const resumen = [
+      ['Ingresos', 'Gastos', 'Balance', 'Transacciones', 'Pendientes', 'Hechos'],
+      [this.ingresos, this.gastos, this.balance, this.totalTransacciones, this.totalPendientes, this.totalHechos]
+    ];
+
+    const transacciones = [
+      ['Descripción', 'Categoría', 'Monto', 'Fecha', 'Tipo'],
+      ...this.transacciones.map(t => [
+        t.description, t.category, t.amount, new Date(t.date.seconds * 1000).toLocaleDateString(), t.type
+      ])
+    ];
+
+    const pagos = [
+      ['Descripción', 'Categoría', 'Monto', 'Fecha Límite', 'Estado'],
+      ...[...this.pagosPendientes, ...this.pagosHechos].map(p => [
+        p.description, p.category, p.amount, new Date(p.dueDate.seconds * 1000).toLocaleDateString(), p.status
+      ])
+    ];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(resumen), 'Resumen');
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(transacciones), 'Transacciones');
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(pagos), 'Pagos por hacer');
+
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    FileSaver.saveAs(data, 'resumen_financiero_completo.xlsx');
+  }
 }

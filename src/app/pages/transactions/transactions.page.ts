@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule, AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { IonicModule, AlertController, LoadingController, ToastController, ModalController } from '@ionic/angular';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MovementsService, Movement } from '../../services/movements.service';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
-
 import { map } from 'rxjs/operators';
 import { Timestamp } from '@firebase/firestore';
+import { EditTransactionComponent } from 'src/app/components/edit-transaction/edit-transaction.component';
+import { EditPendingPaymentComponent } from 'src/app/components/edit-pending-payment/edit-pending-payment.component';
 
 
 @Component({
@@ -29,14 +30,14 @@ export class TransactionsPage {
     date: ''
   });
 
-
   constructor(
     private movementsService: MovementsService,
     private authService: AuthService,
     private fb: FormBuilder,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private modalCtrl: ModalController
   ) {
     this.addForm = this.fb.group({
       amount: ['', [Validators.required, Validators.min(0.01)]],
@@ -53,25 +54,28 @@ export class TransactionsPage {
     });
 
     this.initUser();
+
     this.filterForm.valueChanges.subscribe(value => {
       this.filterSubject.next(value);
     });
   }
 
-   async initUser() {
+  async initUser() {
     const user = await this.authService.getCurrentUser();
     if (user) {
       this.userId = user.uid;
+
       this.movements$ = this.movementsService.getMovements(this.userId).pipe(
         map(movements =>
-          movements.map(mov => ({
-            ...mov,
-            date: mov.date instanceof Timestamp ? mov.date.toDate() : mov.date
-          }))
+          movements
+            .filter(mov => mov.type === 'income' || mov.type === 'expense') // Solo ingresos y gastos
+            .map(mov => ({
+              ...mov,
+              date: mov.date instanceof Timestamp ? mov.date.toDate() : mov.date
+            }))
         )
       );
 
-      // Combinamos movimientos con filtros
       this.filteredMovements$ = combineLatest([this.movements$, this.filterSubject]).pipe(
         map(([movements, filter]) => {
           return movements.filter(mov => {
@@ -80,7 +84,6 @@ export class TransactionsPage {
             const matchDate = filter.date
               ? new Date(mov.date).toDateString() === new Date(filter.date).toDateString()
               : true;
-
             return matchType && matchCategory && matchDate;
           });
         })
@@ -122,8 +125,8 @@ export class TransactionsPage {
       message: '¿Estás seguro que quieres eliminar este movimiento?',
       buttons: [
         { text: 'Cancelar', role: 'cancel' },
-        { 
-          text: 'Eliminar', 
+        {
+          text: 'Eliminar',
           handler: async () => {
             try {
               await this.movementsService.deleteMovement(id);
@@ -139,10 +142,20 @@ export class TransactionsPage {
     await alert.present();
   }
 
-  // Deja pendiente para que armes un modal o formulario para editar
-  editMovement(movement: Movement) {
-    // Aquí podrías abrir un modal o rellenar el formulario para edición
-    console.log('Editar movimiento:', movement);
+  async editMovement(mov: Movement) {
+    const modal = await this.modalCtrl.create({
+      component: EditTransactionComponent,
+      componentProps: { movement: mov },
+    });
+
+    await modal.present();
+
+    const { data } = await modal.onDidDismiss();
+
+    if (data) {
+      const updatedMovement: Movement = { ...mov, ...data };
+      this.movementsService.updateMovement(updatedMovement);
+    }
   }
 
   async showToast(message: string) {
@@ -153,4 +166,6 @@ export class TransactionsPage {
     });
     toast.present();
   }
+  
+
 }

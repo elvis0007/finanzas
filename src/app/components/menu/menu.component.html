@@ -6,25 +6,34 @@
   </ion-header>
   <ion-content>
     <ion-list>
+      <ion-item lines="none">
+        <ion-label>🌗 Modo Oscuro</ion-label>
+        <ion-toggle slot="end" [checked]="darkMode" (ionChange)="onToggleTheme($event)"></ion-toggle>
+      </ion-item>
+
       <ion-item routerLink="/dashboard" routerDirection="root" detail="false" class="menu-item">
-        <ion-icon slot="start" name="home-outline"></ion-icon>
+        <ion-icon slot="start" [icon]="icons.home"></ion-icon>
         <ion-label>Dashboard</ion-label>
       </ion-item>
       <ion-item routerLink="/transactions" routerDirection="root" detail="false" class="menu-item">
-        <ion-icon slot="start" name="list-outline"></ion-icon>
+        <ion-icon slot="start" [icon]="icons.transactions"></ion-icon>
         <ion-label>Transacciones</ion-label>
       </ion-item>
+      <ion-item routerLink="/pending-payments" routerDirection="root" detail="false" class="menu-item">
+        <ion-icon slot="start" name="alarm-outline"></ion-icon>
+        <ion-label>Pagos por hacer</ion-label>
+      </ion-item>
       <ion-item routerLink="/profile" routerDirection="root" detail="false" class="menu-item">
-        <ion-icon slot="start" name="person-outline"></ion-icon>
+        <ion-icon slot="start" [icon]="icons.profile"></ion-icon>
         <ion-label>Perfil</ion-label>
       </ion-item>
+
       <ion-item (click)="logout()" class="menu-item logout-item">
-        <ion-icon [name]="icons.logout" slot="start"></ion-icon>
+        <ion-icon slot="start" [icon]="icons.logout"></ion-icon>
         <ion-label>Cerrar sesión</ion-label>
       </ion-item>
     </ion-list>
   </ion-content>
 </ion-menu>
 
-<!-- Contenido principal -->
 <ion-router-outlet id="main-content"></ion-router-outlet>
