@@ -1,0 +1,304 @@
+// Variables de color para aplicación financiera
+:root {
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --background-gradient: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  --shadow-light: 0 4px 20px rgba(102, 126, 234, 0.15);
+  --shadow-medium: 0 8px 30px rgba(102, 126, 234, 0.2);
+  --border-radius: 16px;
+  --border-radius-small: 12px;
+}
+
+.login-content {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  
+  .login-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+  }
+}
+
+// Header Section
+.login-header {
+  text-align: center;
+  margin-bottom: 40px;
+  
+  .logo-container {
+    margin-bottom: 24px;
+    
+    .logo-icon {
+      font-size: 64px;
+      color: white;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 20px;
+      border-radius: 50%;
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-light);
+    }
+  }
+  
+  .welcome-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 8px 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .welcome-subtitle {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+    font-weight: 400;
+  }
+}
+
+// Form Styles
+.login-form {
+  .form-group {
+    margin-bottom: 24px;
+    
+    .input-container {
+      position: relative;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-light);
+      backdrop-filter: blur(10px);
+      
+      .input-icon {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #667eea;
+        font-size: 20px;
+        z-index: 10;
+      }
+      
+      .custom-input {
+        --background: transparent;
+        --border-color: transparent;
+        --highlight-color: #667eea;
+        padding-left: 48px;
+        
+        .custom-input-field {
+          --color: #333;
+          --placeholder-color: #666;
+        }
+        
+        ion-label {
+          --color: #667eea;
+          font-weight: 500;
+        }
+      }
+      
+      .password-toggle {
+        --color: #667eea;
+        margin-right: 8px;
+      }
+    }
+    
+    .error-message {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      padding: 8px 16px;
+      background: rgba(244, 67, 54, 0.1);
+      border-radius: var(--border-radius-small);
+      font-size: 14px;
+      
+      ion-icon {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+// Forgot Password
+.forgot-password {
+  text-align: right;
+  margin-bottom: 24px;
+  
+  ion-button {
+    --color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    text-decoration: underline;
+  }
+}
+
+// Error Card
+.error-card {
+  margin: 16px 0;
+  --background: rgba(244, 67, 54, 0.1);
+  border-left: 4px solid var(--ion-color-danger);
+  
+  .error-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--ion-color-danger);
+    font-size: 14px;
+    
+    ion-icon {
+      font-size: 20px;
+    }
+  }
+}
+
+// Login Button
+.login-button {
+  --background: var(--success-gradient);
+  --border-radius: var(--border-radius);
+  --box-shadow: var(--shadow-medium);
+  --color: white;
+  height: 56px;
+  font-weight: 600;
+  font-size: 16px;
+  margin: 32px 0 24px 0;
+  text-transform: none;
+  
+  &:not(.button-disabled):hover {
+    --background: linear-gradient(135deg, #45a3fc 0%, #00e8fe 100%);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+  }
+  
+  &.button-disabled {
+    --background: rgba(255, 255, 255, 0.3);
+    --color: rgba(255, 255, 255, 0.6);
+  }
+  
+  ion-spinner {
+    margin-right: 8px;
+  }
+}
+
+// Divider
+.divider {
+  text-align: center;
+  margin: 24px 0;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.3);
+  }
+  
+  span {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    position: relative;
+    backdrop-filter: blur(10px);
+  }
+}
+
+// Register Section
+.register-section {
+  text-align: center;
+  
+  .register-text {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  
+  .register-button {
+    --border-color: rgba(255, 255, 255, 0.5);
+    --color: white;
+    --border-radius: var(--border-radius);
+    height: 48px;
+    font-weight: 500;
+    text-transform: none;
+    backdrop-filter: blur(10px);
+    
+    &:hover {
+      --background: rgba(255, 255, 255, 0.1);
+      --border-color: white;
+    }
+  }
+}
+
+// Footer
+.login-footer {
+  text-align: center;
+  margin-top: 32px;
+  
+  p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+  
+  ion-button {
+    --color: rgba(255, 255, 255, 0.9);
+    font-size: 12px;
+    text-decoration: underline;
+  }
+}
+
+// Responsive Design
+@media (max-width: 480px) {
+  .login-content .login-container {
+    padding: 16px;
+  }
+  
+  .login-header {
+    margin-bottom: 32px;
+    
+    .logo-container .logo-icon {
+      font-size: 48px;
+      padding: 16px;
+    }
+    
+    .welcome-title {
+      font-size: 28px;
+    }
+  }
+  
+  .login-form .form-group {
+    margin-bottom: 20px;
+  }
+}
+
+// Animaciones
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-container > * {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.login-header {
+  animation-delay: 0.1s;
+}
+
+.login-form {
+  animation-delay: 0.2s;
+}
+
+.register-section {
+  animation-delay: 0.3s;
+}

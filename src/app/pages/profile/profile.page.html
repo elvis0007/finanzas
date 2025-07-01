@@ -1,42 +1,139 @@
 <ion-header>
-  <ion-toolbar color="dark" class="glass-toolbar">
+  <ion-toolbar class="modern-toolbar">
     <ion-buttons slot="start">
-      <ion-menu-button color="light"></ion-menu-button>
+      <ion-menu-button class="menu-button"></ion-menu-button>
     </ion-buttons>
-    <ion-title>Perfil</ion-title>
+    <ion-title class="page-title">
+      <ion-icon name="person-outline" class="title-icon"></ion-icon>
+      Perfil
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding futuristic-bg">
+<ion-content class="profile-content">
+  <div class="profile-container">
+    
+    <!-- Profile Header Section -->
+    <div class="profile-header-section fade-in">
+      <div class="avatar-container">
+        <div class="user-avatar">
+          <span class="avatar-initials">{{ userInitials }}</span>
+        </div>
+        <div class="user-info">
+          <h1 class="user-name">{{ userFullName }}</h1>
+          <p class="user-email">{{ userEmail }}</p>
+        </div>
+      </div>
+    </div>
 
-  <ion-card class="glass-card profile-card">
-    <ion-card-header>
-      <ion-card-title>👤 Información del Usuario</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item  lines="none" class="email-item">
-        <ion-label >Email:</ion-label>
-        <ion-text class="email-text">{{ userEmail }}</ion-text>
-      </ion-item>
+    <!-- Profile Form Card -->
+    <ion-card class="profile-form-card modern-card fade-in" style="animation-delay: 0.1s">
+      <ion-card-header class="form-header">
+        <div class="card-title-container">
+          <ion-icon name="create-outline" class="card-title-icon"></ion-icon>
+          <ion-card-title class="card-title">Información Personal</ion-card-title>
+        </div>
+        <p class="card-subtitle">Actualiza tus datos personales</p>
+      </ion-card-header>
+      
+      <ion-card-content class="form-content">
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="profile-form">
+          
+          <!-- First Name Input -->
+          <div class="input-group">
+            <ion-item class="modern-input" lines="none">
+              <ion-icon name="person" slot="start" class="input-icon"></ion-icon>
+              <ion-label position="stacked" class="input-label">Nombre</ion-label>
+              <ion-input 
+                formControlName="firstName" 
+                type="text" 
+                placeholder="Ingresa tu nombre"
+                autocomplete="given-name" 
+                spellcheck="false">
+              </ion-input>
+            </ion-item>
+            <div class="error-message" *ngIf="firstName?.invalid && firstName?.touched">
+              <ion-icon name="alert-circle" class="error-icon"></ion-icon>
+              <span>El nombre es requerido (mínimo 2 caracteres)</span>
+            </div>
+          </div>
 
-      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+          <!-- Last Name Input -->
+          <div class="input-group">
+            <ion-item class="modern-input" lines="none">
+              <ion-icon name="person" slot="start" class="input-icon"></ion-icon>
+              <ion-label position="stacked" class="input-label">Apellido</ion-label>
+              <ion-input 
+                formControlName="lastName" 
+                type="text" 
+                placeholder="Ingresa tu apellido"
+                autocomplete="family-name" 
+                spellcheck="false">
+              </ion-input>
+            </ion-item>
+            <div class="error-message" *ngIf="lastName?.invalid && lastName?.touched">
+              <ion-icon name="alert-circle" class="error-icon"></ion-icon>
+              <span>El apellido es requerido (mínimo 2 caracteres)</span>
+            </div>
+          </div>
 
-        <ion-item class="input-item">
-          <ion-label position="floating" color="light">Nombre</ion-label>
-          <ion-input formControlName="firstName" type="text" autocomplete="given-name" spellcheck="false"></ion-input>
-        </ion-item>
+          <!-- Action Buttons -->
+          <div class="button-group">
+            <ion-button 
+              expand="block" 
+              type="submit" 
+              class="save-btn modern-button"
+              [disabled]="profileForm.invalid || isLoading">
+              <ion-icon name="save" slot="start"></ion-icon>
+              Guardar Cambios
+            </ion-button>
+            
+            <ion-button 
+              expand="block" 
+              fill="outline"
+              color="medium"
+              class="reset-btn"
+              (click)="resetForm()"
+              [disabled]="isLoading">
+              <ion-icon name="refresh" slot="start"></ion-icon>
+              Restablecer
+            </ion-button>
+          </div>
 
-        <ion-item class="input-item">
-          <ion-label position="floating" color="light">Apellido</ion-label>
-          <ion-input formControlName="lastName" type="text" autocomplete="family-name" spellcheck="false"></ion-input>
-        </ion-item>
+        </form>
+      </ion-card-content>
+    </ion-card>
 
-        <ion-button expand="block" type="submit" color="tertiary" shape="round" class="neon-btn" [disabled]="profileForm.invalid">
-          💾 Guardar
-        </ion-button>
+    <!-- Account Information Card -->
+    <ion-card class="account-info-card modern-card fade-in" style="animation-delay: 0.2s">
+      <ion-card-header class="info-header">
+        <div class="card-title-container">
+          <ion-icon name="information-circle-outline" class="card-title-icon"></ion-icon>
+          <ion-card-title class="card-title">Información de Cuenta</ion-card-title>
+        </div>
+      </ion-card-header>
+      
+      <ion-card-content class="info-content">
+        <div class="info-item">
+          <div class="info-label">
+            <ion-icon name="mail" class="info-icon"></ion-icon>
+            <span>Correo Electrónico</span>
+          </div>
+          <div class="info-value">{{ userEmail }}</div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-label">
+            <ion-icon name="shield-checkmark" class="info-icon"></ion-icon>
+            <span>Estado de Cuenta</span>
+          </div>
+          <div class="info-value verified">
+            <ion-icon name="checkmark-circle" class="status-icon"></ion-icon>
+            Verificada
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
 
-      </form>
-    </ion-card-content>
-  </ion-card>
-
+  </div>
 </ion-content>

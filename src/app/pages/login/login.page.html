@@ -1,37 +1,105 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Login</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="login-content">
+  <div class="login-container">
+    <!-- Header con logo y título -->
+    <div class="login-header">
+      <div class="logo-container">
+        <ion-icon name="wallet-outline" class="logo-icon"></ion-icon>
+      </div>
+      <h1 class="welcome-title">Bienvenido</h1>
+      <p class="welcome-subtitle">Inicia sesión en tu cuenta</p>
+    </div>
 
-<ion-content class="ion-padding">
-  <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-    <ion-item>
-      <ion-label position="floating">Correo Electrónico</ion-label>
-      <ion-input formControlName="email" type="email" autocomplete="email"></ion-input>
-    </ion-item>
-    <ion-note color="danger" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
-      Ingresa un correo válido.
-    </ion-note>
+    <!-- Formulario -->
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
+      <div class="form-group">
+        <div class="input-container">
+          <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+          <ion-item lines="none" class="custom-input">
+            <ion-label position="floating">Correo Electrónico</ion-label>
+            <ion-input 
+              formControlName="email" 
+              type="email" 
+              autocomplete="email"
+              class="custom-input-field">
+            </ion-input>
+          </ion-item>
+        </div>
+        <ion-note color="danger" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid" class="error-message">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          Ingresa un correo válido
+        </ion-note>
+      </div>
 
-    <ion-item>
-      <ion-label position="floating">Contraseña</ion-label>
-      <ion-input formControlName="password" type="password" autocomplete="current-password"></ion-input>
-    </ion-item>
-    <ion-note color="danger" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
-      La contraseña es requerida.
-    </ion-note>
+      <div class="form-group">
+        <div class="input-container">
+          <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+          <ion-item lines="none" class="custom-input">
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input 
+              formControlName="password" 
+              [type]="showPassword ? 'text' : 'password'" 
+              autocomplete="current-password"
+              class="custom-input-field">
+            </ion-input>
+            <ion-button 
+              fill="clear" 
+              slot="end" 
+              (click)="togglePassword()"
+              class="password-toggle">
+              <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </div>
+        <ion-note color="danger" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid" class="error-message">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          La contraseña es requerida
+        </ion-note>
+      </div>
 
-    <ion-button expand="block" type="submit" [disabled]="loading">
-      {{ loading ? 'Ingresando...' : 'Ingresar' }}
-    </ion-button>
-  </form>
+ 
+      <!-- Error Message -->
+      <ion-card *ngIf="errorMessage" class="error-card">
+        <ion-card-content>
+          <div class="error-content">
+            <ion-icon name="alert-circle" color="danger"></ion-icon>
+            <span>{{ errorMessage }}</span>
+          </div>
+        </ion-card-content>
+      </ion-card>
 
-  <ion-text color="danger" *ngIf="errorMessage">{{ errorMessage }}</ion-text>
+      <!-- Login Button -->
+      <ion-button 
+        expand="block" 
+        type="submit" 
+        [disabled]="loading || loginForm.invalid"
+        class="login-button">
+        <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+        <span *ngIf="!loading">Ingresar</span>
+        <span *ngIf="loading">Ingresando...</span>
+      </ion-button>
+    </form>
 
-  <ion-button expand="block" fill="clear" (click)="goToRegister()" class="ion-margin-top">
-  ¿No tienes cuenta? Regístrate
-</ion-button>
+    <!-- Divider -->
+    <div class="divider">
+      <span>o</span>
+    </div>
 
+    <!-- Register Link -->
+    <div class="register-section">
+      <p class="register-text">¿No tienes cuenta?</p>
+      <ion-button 
+        expand="block" 
+        fill="outline" 
+        (click)="goToRegister()"
+        class="register-button">
+        Crear cuenta
+      </ion-button>
+    </div>
 
+    <!-- Footer -->
+    <div class="login-footer">
+      <p>Al continuar, aceptas nuestros</p>
+      <ion-button fill="clear" size="small">Términos y Condiciones</ion-button>
+    </div>
+  </div>
 </ion-content>

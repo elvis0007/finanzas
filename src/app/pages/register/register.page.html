@@ -1,42 +1,176 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Registro</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="login-content">
+  <div class="login-container">
+    <!-- Header con logo y título -->
+    <div class="login-header">
+      <div class="logo-container">
+        <ion-icon name="add-circle" class="logo-icon"></ion-icon>
+      </div>
+      <h1 class="welcome-title">Crear Cuenta</h1>
+      <p class="welcome-subtitle">Únete a nuestra plataforma financiera</p>
+    </div>
 
-<ion-content class="ion-padding">
-  <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
-    <ion-item>
-      <ion-label position="floating">Correo electrónico</ion-label>
-      <ion-input type="email" formControlName="email"></ion-input>
-    </ion-item>
-    <ion-note color="danger" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
-      Ingresa un correo válido.
-    </ion-note>
+    <!-- Formulario -->
+    <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="login-form">
+      <div class="form-group">
+        <div class="input-container">
+          <ion-icon name="person" class="input-icon"></ion-icon>
+          <ion-item lines="none" class="custom-input">
+            <ion-label position="floating">Nombre Completo</ion-label>
+            <ion-input 
+              formControlName="fullName" 
+              type="text" 
+              autocomplete="name"
+              class="custom-input-field">
+            </ion-input>
+          </ion-item>
+        </div>
+        <ion-note color="danger" *ngIf="hasFieldError('fullName')" class="error-message">
+          <ion-icon name="alert-circle"></ion-icon>
+          {{ getFieldError('fullName') }}
+        </ion-note>
+      </div>
 
-    <ion-item>
-      <ion-label position="floating">Contraseña</ion-label>
-      <ion-input type="password" formControlName="password"></ion-input>
-    </ion-item>
-    <ion-note color="danger" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
-      La contraseña debe tener al menos 6 caracteres.
-    </ion-note>
+      <div class="form-group">
+        <div class="input-container">
+          <ion-icon name="mail" class="input-icon"></ion-icon>
+          <ion-item lines="none" class="custom-input">
+            <ion-label position="floating">Correo Electrónico</ion-label>
+            <ion-input 
+              formControlName="email" 
+              type="email" 
+              autocomplete="email"
+              class="custom-input-field">
+            </ion-input>
+          </ion-item>
+        </div>
+        <ion-note color="danger" *ngIf="hasFieldError('email')" class="error-message">
+          <ion-icon name="alert-circle"></ion-icon>
+          {{ getFieldError('email') }}
+        </ion-note>
+      </div>
 
-    <ion-item>
-      <ion-label position="floating">Confirmar contraseña</ion-label>
-      <ion-input type="password" formControlName="confirmPassword"></ion-input>
-    </ion-item>
-    <ion-note color="danger" *ngIf="registerForm.errors?.['notMatching'] && registerForm.get('confirmPassword')?.touched">
+      <div class="form-group">
+        <div class="input-container">
+          <ion-icon name="lock-closed" class="input-icon"></ion-icon>
+          <ion-item lines="none" class="custom-input">
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input 
+              formControlName="password" 
+              [type]="showPassword ? 'text' : 'password'" 
+              autocomplete="new-password"
+              class="custom-input-field">
+            </ion-input>
+            <ion-button 
+              fill="clear" 
+              slot="end" 
+              (click)="togglePassword()"
+              class="password-toggle">
+              <ion-icon name="eye" *ngIf="!showPassword"></ion-icon>
+              <ion-icon name="eye-off" *ngIf="showPassword"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </div>
+        <ion-note color="danger" *ngIf="hasFieldError('password')" class="error-message">
+          <ion-icon name="alert-circle"></ion-icon>
+          {{ getFieldError('password') }}
+        </ion-note>
+      </div>
 
-      Las contraseñas no coinciden.
-    </ion-note>
+      <div class="form-group">
+        <div class="input-container">
+          <ion-icon name="lock-closed" class="input-icon"></ion-icon>
+          <ion-item lines="none" class="custom-input">
+            <ion-label position="floating">Confirmar Contraseña</ion-label>
+            <ion-input 
+              formControlName="confirmPassword" 
+              [type]="showConfirmPassword ? 'text' : 'password'" 
+              autocomplete="new-password"
+              class="custom-input-field">
+            </ion-input>
+            <ion-button 
+              fill="clear" 
+              slot="end" 
+              (click)="toggleConfirmPassword()"
+              class="password-toggle">
+              <ion-icon name="eye" *ngIf="!showConfirmPassword"></ion-icon>
+              <ion-icon name="eye-off" *ngIf="showConfirmPassword"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </div>
+        <ion-note color="danger" *ngIf="hasFieldError('confirmPassword') || hasPasswordMismatch()" class="error-message">
+          <ion-icon name="alert-circle"></ion-icon>
+          {{ getFieldError('confirmPassword') || getPasswordMismatchError() }}
+        </ion-note>
+      </div>
 
-    <ion-button expand="block" type="submit" [disabled]="registerForm.invalid || loading">
-      Registrarse
-    </ion-button>
+      <!-- Términos y condiciones -->
+      <div class="form-group">
+        <ion-item lines="none" class="terms-checkbox">
+          <ion-checkbox 
+            formControlName="acceptTerms" 
+            slot="start"
+            color="primary">
+          </ion-checkbox>
+          <ion-label class="terms-label">
+            Acepto los 
+            <ion-button fill="clear" size="small" class="terms-link">
+              Términos y Condiciones
+            </ion-button>
+            y la 
+            <ion-button fill="clear" size="small" class="terms-link">
+              Política de Privacidad
+            </ion-button>
+          </ion-label>
+        </ion-item>
+        <ion-note color="danger" *ngIf="hasFieldError('acceptTerms')" class="error-message">
+          <ion-icon name="alert-circle"></ion-icon>
+          {{ getFieldError('acceptTerms') }}
+        </ion-note>
+      </div>
 
-    <ion-text color="danger" *ngIf="errorMessage">
-      {{ errorMessage }}
-    </ion-text>
-  </form>
+      <!-- Error Message -->
+      <ion-card *ngIf="errorMessage" class="error-card">
+        <ion-card-content>
+          <div class="error-content">
+            <ion-icon name="alert-circle" color="danger"></ion-icon>
+            <span>{{ errorMessage }}</span>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Register Button -->
+      <ion-button 
+        expand="block" 
+        type="submit" 
+        [disabled]="loading || registerForm.invalid"
+        class="login-button">
+        <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+        <span *ngIf="!loading">Crear Cuenta</span>
+        <span *ngIf="loading">Creando cuenta...</span>
+      </ion-button>
+    </form>
+
+    <!-- Divider -->
+    <div class="divider">
+      <span>o</span>
+    </div>
+
+    <!-- Login Link -->
+    <div class="register-section">
+      <p class="register-text">¿Ya tienes cuenta?</p>
+      <ion-button 
+        expand="block" 
+        fill="outline" 
+        (click)="goToLogin()"
+        class="register-button">
+        Iniciar Sesión
+      </ion-button>
+    </div>
+
+    <!-- Footer -->
+    <div class="login-footer">
+      <p>Al registrarte, aceptas nuestros</p>
+      <ion-button fill="clear" size="small">Términos de Servicio</ion-button>
+    </div>
+  </div>
 </ion-content>
