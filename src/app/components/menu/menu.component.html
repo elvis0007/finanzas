@@ -1,30 +1,144 @@
-<ion-menu side="start" menuId="first" contentId="main-content" class="futuristic-menu">
+<!-- src/app/components/menu/menu.component.html -->
+<ion-menu 
+  side="start" 
+  menuId="first" 
+  contentId="main-content" 
+  class="modern-menu"
+  [class.dark-theme]="isDarkMode">
+  
+  <!-- Header con efecto glassmorphism -->
   <ion-header>
-    <ion-toolbar class="glass-toolbar">
-      <ion-title>Menú</ion-title>
+    <ion-toolbar class="modern-toolbar">
+      <ion-title class="menu-title">
+        <ion-icon name="wallet-outline"></ion-icon>
+        Mi Dinero
+      </ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-content>
-    <ion-list>
-      <ion-item routerLink="/dashboard" routerDirection="root" detail="false" class="menu-item">
-        <ion-icon slot="start" name="home-outline"></ion-icon>
-        <ion-label>Dashboard</ion-label>
+  
+  <ion-content class="menu-content">
+    
+    <!-- Sección principal de navegación -->
+    <div class="menu-section">
+      <ion-list class="menu-list">
+        
+        <!-- Dashboard -->
+        <ion-item 
+          routerLink="/dashboard"
+          routerDirection="root"
+          detail="false"
+          class="menu-item slide-in"
+          style="animation-delay: 0.1s">
+          <ion-icon 
+            name="home-outline"
+            slot="start" 
+            class="menu-icon">
+          </ion-icon>
+          <ion-label class="menu-label">Dashboard</ion-label>
+          <div class="menu-indicator" slot="end"></div>
+        </ion-item>
+        
+        <!-- Transacciones -->
+        <ion-item 
+          routerLink="/transactions"
+          routerDirection="root"
+          detail="false"
+          class="menu-item slide-in"
+          style="animation-delay: 0.2s">
+          <ion-icon 
+            name="list-outline"
+            slot="start" 
+            class="menu-icon">
+          </ion-icon>
+          <ion-label class="menu-label">Transacciones</ion-label>
+          <div class="menu-badge" slot="end" *ngIf="pendingTransactions > 0">
+            {{ pendingTransactions }}
+          </div>
+        </ion-item>
+
+        <!-- Perfil -->
+        <ion-item 
+          routerLink="/profile"
+          routerDirection="root"
+          detail="false"
+          class="menu-item slide-in"
+          style="animation-delay: 0.4s">
+          <ion-icon 
+            name="person-outline"
+            slot="start" 
+            class="menu-icon">
+          </ion-icon>
+          <ion-label class="menu-label">Perfil</ion-label>
+          <div class="menu-avatar" slot="end">
+            <img [src]="userAvatar" alt="Avatar" />
+          </div>
+        </ion-item>
+        
+      </ion-list>
+    </div>
+
+    
+    <!-- Sección de configuración con tema -->
+    <div class="theme-section">
+      <div class="section-title">Configuración</div>
+      
+      <!-- Toggle de tema -->
+      <ion-item class="theme-toggle-item slide-in" style="animation-delay: 0.55s">
+        <div class="theme-icon-container" slot="start">
+          <ion-icon 
+            [name]="isDarkMode ? 'sunny-outline' : 'moon-outline'"
+            class="theme-icon">
+          </ion-icon>
+        </div>
+        <ion-label class="menu-label">
+          {{ isDarkMode ? 'Modo Claro' : 'Modo Oscuro' }}
+        </ion-label>
+        <ion-toggle 
+          slot="end"
+          [checked]="isDarkMode"
+          (ionChange)="toggleTheme()"
+          class="theme-toggle">
+        </ion-toggle>
       </ion-item>
-      <ion-item routerLink="/transactions" routerDirection="root" detail="false" class="menu-item">
-        <ion-icon slot="start" name="list-outline"></ion-icon>
-        <ion-label>Transacciones</ion-label>
+      
+      <!-- Notificaciones -->
+      <ion-item class="theme-toggle-item slide-in" style="animation-delay: 0.6s">
+        <div class="theme-icon-container" slot="start">
+          <ion-icon 
+            name="notifications-outline"
+            class="theme-icon">
+          </ion-icon>
+        </div>
+        <ion-label class="menu-label">Notificaciones</ion-label>
+        <ion-toggle 
+          slot="end"
+          [checked]="notificationsEnabled"
+          (ionChange)="toggleNotifications()"
+          class="theme-toggle">
+        </ion-toggle>
       </ion-item>
-      <ion-item routerLink="/profile" routerDirection="root" detail="false" class="menu-item">
-        <ion-icon slot="start" name="person-outline"></ion-icon>
-        <ion-label>Perfil</ion-label>
+
+      
+    </div>
+      
+    <!-- Sección de logout -->
+    <div class="logout-section">
+      <ion-item 
+        (click)="logout()"
+        class="menu-item logout-item slide-in"
+        style="animation-delay: 0.75s">
+        <ion-icon 
+          name="log-out-outline"
+          slot="start" 
+          class="logout-icon">
+        </ion-icon>
+        <ion-label class="menu-label">Cerrar sesión</ion-label>
+        <div class="logout-indicator" slot="end"></div>
       </ion-item>
-      <ion-item (click)="logout()" class="menu-item logout-item">
-        <ion-icon [name]="icons.logout" slot="start"></ion-icon>
-        <ion-label>Cerrar sesión</ion-label>
-      </ion-item>
-    </ion-list>
+    </div>
+    
   </ion-content>
 </ion-menu>
 
-<!-- Contenido principal -->
+<!-- Main Content -->
 <ion-router-outlet id="main-content"></ion-router-outlet>

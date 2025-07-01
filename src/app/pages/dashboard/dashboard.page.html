@@ -1,54 +1,142 @@
+<!-- src/app/pages/dashboard/dashboard.page.html -->
 <ion-header>
-  <ion-toolbar color="dark" class="glass-toolbar">
+  <ion-toolbar class="modern-toolbar">
     <ion-buttons slot="start">
-      <ion-menu-button color="light"></ion-menu-button>
+      <ion-menu-button class="menu-button"></ion-menu-button>
     </ion-buttons>
-    <ion-title>Dashboard</ion-title>
+    <ion-title class="page-title">
+      <ion-icon name="analytics-outline" class="title-icon"></ion-icon>
+      Dashboard
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding futuristic-bg">
+<ion-content class="dashboard-content">
+  <div class="dashboard-container">
+    
+    <!-- Welcome Section -->
+    <div class="welcome-section fade-in">
+      <h1 class="welcome-title">¡Bienvenido de vuelta!</h1>
+      <p class="welcome-subtitle">Aquí tienes un resumen de tus finanzas</p>
+    </div>
 
-  <!-- Resumen financiero -->
-  <ion-card class="glass-card">
-    <ion-card-header>
-      <ion-card-title>📊 Resumen financiero</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p><strong>Ingresos:</strong> <span class="income">{{ ingresos | currency }}</span></p>
-      <p><strong>Gastos:</strong> <span class="expense">{{ gastos | currency }}</span></p>
-      <p><strong>Balance:</strong> <span [class.positive]="balance >= 0" [class.negative]="balance < 0">{{ balance | currency }}</span></p>
-    </ion-card-content>
-  </ion-card>
+    <!-- Financial Summary Cards -->
+    <div class="summary-grid fade-in" style="animation-delay: 0.1s">
+      
+      <!-- Income Card -->
+      <ion-card class="summary-card income-card">
+        <ion-card-content class="summary-content">
+          <div class="summary-header">
+            <ion-icon name="trending-up" class="summary-icon income-icon"></ion-icon>
+            <span class="summary-label">Ingresos</span>
+          </div>
+          <div class="summary-amount income-text">{{ ingresos | currency:'USD':'symbol':'1.0-0' }}</div>
+        </ion-card-content>
+      </ion-card>
 
-  <!-- Gráfico por categoría -->
-  <ion-card class="glass-card">
-    <ion-card-header>
-      <ion-card-title>📈 Gráfico por categoría</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <canvas baseChart [data]="pieChart" [type]="pieChartType"></canvas>
-    </ion-card-content>
-  </ion-card>
+      <!-- Expenses Card -->
+      <ion-card class="summary-card expense-card">
+        <ion-card-content class="summary-content">
+          <div class="summary-header">
+            <ion-icon name="trending-down" class="summary-icon expense-icon"></ion-icon>
+            <span class="summary-label">Gastos</span>
+          </div>
+          <div class="summary-amount expense-text">{{ gastos | currency:'USD':'symbol':'1.0-0' }}</div>
+        </ion-card-content>
+      </ion-card>
 
-  <!-- Gráfico mensual -->
-  <ion-card class="glass-card">
-    <ion-card-header>
-      <ion-card-title>📅 Ingresos y Gastos por mes</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <canvas baseChart [data]="barChart" [options]="barChartOptions" [type]="barChartType"></canvas>
-    </ion-card-content>
-  </ion-card>
+      <!-- Balance Card -->
+      <ion-card class="summary-card balance-card">
+        <ion-card-content class="summary-content">
+          <div class="summary-header">
+            <ion-icon name="wallet" class="summary-icon balance-icon"></ion-icon>
+            <span class="summary-label">Balance</span>
+          </div>
+          <div class="summary-amount" 
+               [class.balance-positive]="balance >= 0" 
+               [class.balance-negative]="balance < 0">
+            {{ balance | currency:'USD':'symbol':'1.0-0' }}
+          </div>
+        </ion-card-content>
+      </ion-card>
 
-  <!-- Exportar datos -->
-  <ion-card class="glass-card">
-    <ion-card-header>
-      <ion-card-title>🚀 Exportar Datos</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-button expand="block" color="warning" shape="round" class="neon-btn" (click)="exportarPDF()">📄 Exportar PDF</ion-button>
-      <ion-button expand="block" color="tertiary" shape="round" class="neon-btn" (click)="exportarCSV()">📊 Exportar Excel</ion-button>
-    </ion-card-content>
-  </ion-card>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-section">
+      
+      <!-- Category Chart -->
+      <ion-card class="chart-card modern-card fade-in" style="animation-delay: 0.2s">
+        <ion-card-header class="chart-header">
+          <div class="charat-title-container">
+            <ion-icon name="pie-chart" class="chart-title-icon"></ion-icon>
+            <ion-card-title class="chart-title">Gastos por Categoría</ion-card-title>
+          </div>
+        </ion-card-header>
+        <ion-card-content class="chart-content">
+          <div class="chart-container">
+            <canvas baseChart 
+                    [data]="pieChart" 
+                    [type]="pieChartType"
+                    class="chart-canvas"></canvas>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Monthly Chart -->
+      <ion-card class="chart-card modern-card fade-in" style="animation-delay: 0.3s">
+        <ion-card-header class="chart-header">
+          <div class="chart-title-container">
+            <ion-icon name="bar-chart" class="chart-title-icon"></ion-icon>
+            <ion-card-title class="chart-title">Ingresos vs Gastos Mensuales</ion-card-title>
+          </div>
+        </ion-card-header>
+        <ion-card-content class="chart-content">
+          <div class="chart-container">
+            <canvas baseChart 
+                    [data]="barChart" 
+                    [options]="barChartOptions" 
+                    [type]="barChartType"
+                    class="chart-canvas"></canvas>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+    </div>
+
+    <!-- Export Section -->
+    <ion-card class="export-card modern-card fade-in" style="animation-delay: 0.4s">
+      <ion-card-header class="export-header">
+        <div class="chart-title-container">
+          <ion-icon name="download" class="chart-title-icon"></ion-icon>
+          <ion-card-title class="chart-title">Exportar Datos</ion-card-title>
+        </div>
+        <p class="export-subtitle">Descarga tus reportes financieros</p>
+      </ion-card-header>
+      
+      <ion-card-content class="export-content">
+        <div class="export-buttons">
+          <ion-button 
+            expand="block" 
+            fill="solid"
+            class="export-btn pdf-btn modern-button" 
+            (click)="exportarPDF()">
+            <ion-icon name="document-text" slot="start"></ion-icon>
+            Exportar PDF
+          </ion-button>
+          
+          <ion-button 
+            expand="block" 
+            fill="outline"
+            color="secondary"
+            class="export-btn excel-btn modern-button" 
+            (click)="exportarCSV()">
+            <ion-icon name="grid" slot="start"></ion-icon>
+            Exportar Excel
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
 </ion-content>

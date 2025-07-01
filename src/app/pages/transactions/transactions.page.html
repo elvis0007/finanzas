@@ -1,135 +1,281 @@
-<ion-header translucent>
-  <ion-toolbar color="dark" class="glass-toolbar">
+<!-- src/app/pages/transactions/transactions.page.html -->
+<ion-header>
+  <ion-toolbar class="modern-toolbar">
     <ion-buttons slot="start">
-        <ion-menu-button color="light"></ion-menu-button>
+      <ion-menu-button class="menu-button"></ion-menu-button>
     </ion-buttons>
-    <ion-title>📊 Transacciones</ion-title>
+    <ion-title class="page-title">
+      <ion-icon name="card-outline" class="title-icon"></ion-icon>
+      Transacciones
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
+<ion-content class="transactions-content">
+  <div class="transactions-container">
+    
+    <!-- Welcome Section -->
+    <div class="welcome-section fade-in">
+      <h1 class="welcome-title">Gestiona tus Finanzas</h1>
+      <p class="welcome-subtitle">Registra y controla todos tus movimientos financieros</p>
+    </div>
 
+    <!-- ADD MOVEMENT FORM -->
+    <ion-card class="form-card modern-card fade-in" style="animation-delay: 0.1s">
+      <ion-card-header class="form-header">
+        <div class="form-title-container">
+          <ion-icon name="add-circle" class="form-title-icon"></ion-icon>
+          <ion-card-title class="form-title">Agregar Movimiento</ion-card-title>
+        </div>
+        <p class="form-subtitle">Registra un nuevo ingreso o gasto</p>
+      </ion-card-header>
 
+      <ion-card-content class="form-content">
+        <form [formGroup]="addForm" (ngSubmit)="addMovement()" class="modern-form">
+          
+          <!-- Amount Input -->
+          <div class="input-group">
+            <ion-item class="modern-input" lines="none">
+              <div class="input-icon-container" slot="start">
+                <ion-icon name="cash-outline" class="input-icon"></ion-icon>
+              </div>
+              <ion-label position="floating" class="input-label">Monto</ion-label>
+              <ion-input 
+                type="number" 
+                formControlName="amount"
+                class="input-field"
+                placeholder="">
+              </ion-input>
+            </ion-item>
+            <ion-note 
+              color="danger" 
+              class="error-note"
+              *ngIf="addForm.get('amount')?.touched && addForm.get('amount')?.invalid">
+              Ingresa un monto válido
+            </ion-note>
+          </div>
 
+          <!-- Description Input -->
+          <div class="input-group">
+            <ion-item class="modern-input" lines="none">
+              <div class="input-icon-container" slot="start">
+                <ion-icon name="create-outline" class="input-icon"></ion-icon>
+              </div>
+              <ion-label position="floating" class="input-label">Descripción</ion-label>
+              <ion-input 
+                type="text" 
+                formControlName="description"
+                class="input-field"
+                placeholder="">
+              </ion-input>
+            </ion-item>
+            <ion-note 
+              color="danger" 
+              class="error-note"
+              *ngIf="addForm.get('description')?.touched && addForm.get('description')?.invalid">
+              La descripción es requerida
+            </ion-note>
+          </div>
 
+          <!-- Category Select -->
+          <div class="input-group">
+            <ion-item class="modern-input" lines="none">
+              <div class="input-icon-container" slot="start">
+                <ion-icon name="pricetags-outline" class="input-icon"></ion-icon>
+              </div>
+              <ion-label class="input-label">Categoría</ion-label>
+              <ion-select 
+                formControlName="category" 
+                placeholder="Selecciona categoría"
+                class="modern-select">
+                <ion-select-option value="comida">🍔 Comida</ion-select-option>
+                <ion-select-option value="transporte">🚗 Transporte</ion-select-option>
+                <ion-select-option value="salud">🩺 Salud</ion-select-option>
+                <ion-select-option value="educacion">📚 Educación</ion-select-option>
+                <ion-select-option value="entretenimiento">🎮 Entretenimiento</ion-select-option>
+                <ion-select-option value="compras">🛒 Compras</ion-select-option>
+                <ion-select-option value="otros">📦 Otros</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </div>
 
-<ion-content class="ion-padding futuristic-bg">
+          <!-- Type Segment -->
+          <div class="input-group">
+            <div class="segment-container">
+              <ion-label class="segment-label">Tipo de Movimiento</ion-label>
+              <ion-segment formControlName="type" class="modern-segment">
+                <ion-segment-button value="income" class="segment-button income-segment">
+                  <ion-icon name="trending-up" class="segment-icon"></ion-icon>
+                  <ion-label class="segment-text">Ingreso</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="expense" class="segment-button expense-segment">
+                  <ion-icon name="trending-down" class="segment-icon"></ion-icon>
+                  <ion-label class="segment-text">Gasto</ion-label>
+                </ion-segment-button>
+              </ion-segment>
+            </div>
+          </div>
 
-  <!-- FORMULARIO NUEVO MOVIMIENTO -->
-  <ion-card class="glass-card">
-    <ion-card-header>
-      <ion-card-title>➕ Agregar Movimiento</ion-card-title>
-    </ion-card-header>
+          <!-- Date Input -->
+          <div class="input-group">
+            <ion-item class="modern-input" lines="none">
+              <div class="input-icon-container" slot="start">
+                <ion-icon name="calendar-outline" class="input-icon"></ion-icon>
+              </div>
+              <ion-label position="floating" class="input-label">Fecha</ion-label>
+              <ion-datetime 
+                formControlName="date" 
+                displayFormat="DD/MM/YYYY"
+                class="input-field">
+              </ion-datetime>
+            </ion-item>
+          </div>
 
-    <ion-card-content>
-      <form [formGroup]="addForm" (ngSubmit)="addMovement()">
-        <ion-item>
-          <ion-icon name="cash-outline" slot="start"></ion-icon>
-          <ion-label position="floating">Monto</ion-label>
-          <ion-input type="number" formControlName="amount"></ion-input>
-        </ion-item>
-        <ion-note color="danger" *ngIf="addForm.get('amount')?.touched && addForm.get('amount')?.invalid">
-          Ingresa un monto válido.
-        </ion-note>
+          <!-- Submit Button -->
+          <ion-button 
+            expand="block" 
+            type="submit" 
+            [disabled]="addForm.invalid" 
+            class="submit-button modern-button">
+            <ion-icon name="save-outline" slot="start"></ion-icon>
+            Guardar Movimiento
+          </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
 
-        <ion-item>
-          <ion-icon name="create-outline" slot="start"></ion-icon>
-          <ion-label position="floating">Descripción</ion-label>
-          <ion-input type="text" formControlName="description"></ion-input>
-        </ion-item>
-        <ion-note color="danger" *ngIf="addForm.get('description')?.touched && addForm.get('description')?.invalid">
-          La descripción es requerida.
-        </ion-note>
+    <!-- FILTER SECTION -->
+    <ion-card class="filter-card modern-card fade-in" style="animation-delay: 0.2s">
+      <ion-card-header class="filter-header">
+        <div class="form-title-container">
+          <ion-icon name="funnel" class="form-title-icon"></ion-icon>
+          <ion-card-title class="form-title">Filtrar Transacciones</ion-card-title>
+        </div>
+        <p class="form-subtitle">Encuentra rápidamente lo que buscas</p>
+      </ion-card-header>
+      
+      <ion-card-content class="filter-content">
+        <form [formGroup]="filterForm" class="filter-form">
+          <div class="filter-grid">
+            
+            <!-- Type Filter -->
+            <div class="filter-group">
+              <ion-item class="modern-input small-input" lines="none">
+                <div class="input-icon-container" slot="start">
+                  <ion-icon name="swap-vertical-outline" class="input-icon"></ion-icon>
+                </div>
+                <ion-label class="input-label">Tipo</ion-label>
+                <ion-select 
+                  formControlName="type" 
+                  placeholder="Todos"
+                  class="modern-select">
+                  <ion-select-option value="">Todos</ion-select-option>
+                  <ion-select-option value="income">Ingresos</ion-select-option>
+                  <ion-select-option value="expense">Gastos</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </div>
 
-        <ion-item>
-          <ion-icon name="pricetags-outline" slot="start"></ion-icon>
-          <ion-label>Categoría</ion-label>
-          <ion-select formControlName="category" placeholder="Selecciona categoría">
-            <ion-select-option value="comida">🍔 Comida</ion-select-option>
-            <ion-select-option value="transporte">🚗 Transporte</ion-select-option>
-            <ion-select-option value="salud">🩺 Salud</ion-select-option>
-            <ion-select-option value="educacion">📚 Educación</ion-select-option>
-            <ion-select-option value="otros">📦 Otros</ion-select-option>
-          </ion-select>
-        </ion-item>
+            <!-- Category Filter -->
+            <div class="filter-group">
+              <ion-item class="modern-input small-input" lines="none">
+                <div class="input-icon-container" slot="start">
+                  <ion-icon name="pricetags-outline" class="input-icon"></ion-icon>
+                </div>
+                <ion-label class="input-label">Categoría</ion-label>
+                <ion-select 
+                  formControlName="category" 
+                  placeholder="Todas"
+                  class="modern-select">
+                  <ion-select-option value="">Todas</ion-select-option>
+                  <ion-select-option value="comida">Comida</ion-select-option>
+                  <ion-select-option value="transporte">Transporte</ion-select-option>
+                  <ion-select-option value="salud">Salud</ion-select-option>
+                  <ion-select-option value="educacion">Educación</ion-select-option>
+                  <ion-select-option value="entretenimiento">Entretenimiento</ion-select-option>
+                  <ion-select-option value="compras">Compras</ion-select-option>
+                  <ion-select-option value="otros">Otros</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </div>
+          </div>
+        </form>
+      </ion-card-content>
+    </ion-card>
 
-        <ion-item>
-          <ion-label>Tipo</ion-label>
-          <ion-segment formControlName="type">
-            <ion-segment-button value="income">Ingreso</ion-segment-button>
-            <ion-segment-button value="expense">Gasto</ion-segment-button>
-          </ion-segment>
-        </ion-item>
+    <!-- MOVEMENTS LIST -->
+    <ion-card class="list-card modern-card fade-in" style="animation-delay: 0.3s">
+      <ion-card-header class="list-header">
+        <div class="form-title-container">
+          <ion-icon name="list-outline" class="form-title-icon"></ion-icon>
+          <ion-card-title class="form-title">Historial de Movimientos</ion-card-title>
+        </div>
+        <p class="form-subtitle">Gestiona todos tus registros financieros</p>
+      </ion-card-header>
+      
+      <div class="movements-list">
+        <div class="movement-item" *ngFor="let mov of filteredMovements$ | async; trackBy: trackByMovement">
+          <div class="movement-content">
+            
+            <!-- Movement Icon -->
+            <div class="movement-icon-container">
+              <div class="movement-icon" [class.income-icon]="mov.type === 'income'" [class.expense-icon]="mov.type === 'expense'">
+                <ion-icon [name]="mov.type === 'income' ? 'trending-up' : 'trending-down'"></ion-icon>
+              </div>
+            </div>
 
-        <ion-item>
-          <ion-icon name="calendar-outline" slot="start"></ion-icon>
-          <ion-label position="floating">Fecha</ion-label>
-          <ion-datetime formControlName="date" displayFormat="DD/MM/YYYY"></ion-datetime>
-        </ion-item>
+            <!-- Movement Info -->
+            <div class="movement-info">
+              <div class="movement-main">
+                <h3 class="movement-description">{{ mov.description }}</h3>
+                <div class="movement-amount" 
+                     [class.income-amount]="mov.type === 'income'" 
+                     [class.expense-amount]="mov.type === 'expense'">
+                  {{ mov.type === 'income' ? '+' : '-' }}{{ mov.amount | currency:'USD':'symbol':'1.2-2' }}
+                </div>
+              </div>
+              
+              <div class="movement-meta">
+                <div class="movement-category">
+                  <ion-icon name="pricetag-outline" class="meta-icon"></ion-icon>
+                  <span class="meta-text">{{ getCategoryName(mov.category) }}</span>
+                </div>
+                <div class="movement-date">
+                  <ion-icon name="calendar-outline" class="meta-icon"></ion-icon>
+                  <span class="meta-text">{{ mov.date | date:'dd/MM/yyyy' }}</span>
+                </div>
+              </div>
+            </div>
 
-        <ion-button expand="block" type="submit" [disabled]="addForm.invalid" color="success">
-          Guardar Movimiento
-        </ion-button>
-      </form>
-    </ion-card-content>
-  </ion-card>
+            <!-- Movement Actions -->
+            <div class="movement-actions">
+              <ion-button 
+                fill="clear" 
+                class="action-button edit-button" 
+                (click)="editMovement(mov)">
+                <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+              </ion-button>
+              
+              <ion-button 
+                fill="clear" 
+                class="action-button delete-button" 
+                (click)="deleteMovement(mov.id)">
+                <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+        </div>
 
-  <!-- FILTRO -->
-  <ion-card class="glass-card">
-    <ion-card-header>
-      <ion-card-title>🔍 Filtrar Transacciones</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <form [formGroup]="filterForm">
-        <ion-item>
-          <ion-label>Tipo</ion-label>
-          <ion-select formControlName="type" placeholder="Todos">
-            <ion-select-option value="">Todos</ion-select-option>
-            <ion-select-option value="income">Ingreso</ion-select-option>
-            <ion-select-option value="expense">Gasto</ion-select-option>
-          </ion-select>
-        </ion-item>
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="(filteredMovements$ | async)?.length === 0">
+          <div class="empty-icon">
+            <ion-icon name="document-outline"></ion-icon>
+          </div>
+          <h3 class="empty-title">No hay movimientos</h3>
+          <p class="empty-subtitle">Agrega tu primer movimiento para comenzar a gestionar tus finanzas</p>
+        </div>
+      </div>
+    </ion-card>
 
-        <ion-item>
-          <ion-label>Categoría</ion-label>
-          <ion-select formControlName="category" placeholder="Todas">
-            <ion-select-option value="">Todas</ion-select-option>
-            <ion-select-option value="comida">Comida</ion-select-option>
-            <ion-select-option value="transporte">Transporte</ion-select-option>
-            <ion-select-option value="salud">Salud</ion-select-option>
-            <!-- más categorías -->
-          </ion-select>
-        </ion-item>
-      </form>
-    </ion-card-content>
-  </ion-card>
-
-  <!-- LISTA DE MOVIMIENTOS -->
-  <ion-card class="glass-card">
-    <ion-card-header>
-      <ion-card-title>📋 Lista de Movimientos</ion-card-title>
-    </ion-card-header>
-    <ion-list>
-      <ion-item-sliding *ngFor="let mov of filteredMovements$ | async">
-        <ion-item>
-          <ion-label>
-            <h2>{{ mov.description }} - {{ mov.amount | currency }}</h2>
-            <p>{{ mov.category }} - {{ mov.type === 'income' ? 'Ingreso' : 'Gasto' }} - {{ mov.date | date: 'shortDate' }}</p>
-          </ion-label>
-          <ion-buttons slot="end" class="action-buttons">
-  <ion-button class="edit-btn" fill="outline" shape="round" (click)="editMovement(mov)">
-    <ion-icon name="create-outline" slot="start"></ion-icon>
-    Editar
-  </ion-button>
-
-  <ion-button class="delete-btn" fill="outline" shape="round" color="danger" (click)="deleteMovement(mov.id)">
-    <ion-icon name="trash-outline" slot="start"></ion-icon>
-    Eliminar
-  </ion-button>
-</ion-buttons>
-
-        </ion-item>
-      </ion-item-sliding>
-    </ion-list>
-  </ion-card>
-
+  </div>
 </ion-content>

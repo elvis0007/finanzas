@@ -1,98 +1,563 @@
-.futuristic-bg {
-  --background: linear-gradient(135deg, #1f1f2e, #2a2a3b);
-  color: #fff;
+// src/app/pages/transactions/transactions.page.scss
+
+.transactions-content {
+  --background: var(--app-background);
+  --color: var(--app-text-primary);
 }
 
-.glass-card {
-  backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 20px;
+.transactions-container {
   padding: 16px;
-  margin: 12px 0;
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 1200px;
+  margin: 0 auto;
 }
-.action-buttons {
+
+// Welcome Section
+.welcome-section {
+  text-align: center;
+  margin-bottom: 32px;
+  padding: 24px 16px;
+}
+
+.welcome-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--app-text-primary);
+  margin: 0 0 8px 0;
+  background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.welcome-subtitle {
+  font-size: 1.1rem;
+  color: var(--app-text-secondary);
+  margin: 0;
+  font-weight: 400;
+}
+
+// Toolbar
+.modern-toolbar {
+  --background: var(--app-glass-background);
+  --color: var(--app-text-primary);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--app-border-light);
+}
+
+.menu-button {
+  --color: var(--ion-color-primary);
+  font-size: 1.5rem;
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--app-text-primary);
+}
+
+.title-icon {
+  font-size: 1.4rem;
+  margin-right: 8px;
+  color: var(--ion-color-primary);
+}
+
+// Modern Cards
+.modern-card {
+  background: var(--app-glass-background);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--app-border-light);
+  margin-bottom: 24px;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px var(--app-shadow);
+  }
+}
+
+// Form Card
+.form-card {
+  margin-bottom: 32px;
+}
+
+.form-header, .filter-header, .list-header {
+  padding: 24px 24px 16px 24px;
+  border-bottom: 1px solid var(--app-border-light);
+}
+
+.form-title-container {
+  display: flex;
+  align-items: center;
+}
+
+.form-title-icon {
+  font-size: 1.3rem;
+  margin-right: 12px;
+  color: var(--ion-color-primary);
+}
+
+.form-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--app-text-primary);
+  margin: 0;
+}
+
+.form-subtitle {
+  color: var(--app-text-secondary);
+  font-size: 0.95rem;
+  margin: 8px 0 0 0;
+  font-weight: 400;
+}
+
+.form-content, .filter-content {
+  padding: 24px;
+}
+
+// Modern Form Styling
+.modern-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modern-input {
+  --background: var(--app-input-background);
+  --color: var(--app-text-primary);
+  --border-radius: 16px;
+  --padding-start: 0;
+  --padding-end: 0;
+  --inner-padding-start: 16px;
+  --inner-padding-end: 16px;
+  --min-height: 56px;
+  border: 1px solid var(--app-border-light);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  margin: 0;
+
+  &:hover, &:focus-within {
+    border-color: var(--ion-color-primary);
+    box-shadow: 0 0 0 3px rgba(var(--ion-color-primary-rgb), 0.1);
+  }
+}
+
+.small-input {
+  --min-height: 48px;
+}
+
+.input-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  margin-right: 12px;
+}
+
+.input-icon {
+  font-size: 1.2rem;
+  color: var(--ion-color-primary);
+}
+
+.input-label {
+  --color: var(--app-text-secondary);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.input-field {
+  --color: var(--app-text-primary);
+  --placeholder-color: var(--app-text-tertiary);
+  font-size: 1rem;
+}
+
+.modern-select {
+  --color: var(--app-text-primary);
+  --placeholder-color: var(--app-text-tertiary);
+}
+
+.error-note {
+  font-size: 0.8rem;
+  margin-top: 4px;
+  margin-left: 16px;
+  font-weight: 500;
+}
+
+// Segment Styling
+.segment-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.segment-label {
+  color: var(--app-text-secondary);
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-left: 4px;
+}
+
+.modern-segment {
+  --background: var(--app-input-background);
+  border: 1px solid var(--app-border-light);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.segment-button {
+  --color: var(--app-text-secondary);
+  --color-checked: white;
+  --indicator-height: 100%;
+  --border-radius: 14px;
+  margin: 2px;
+  min-height: 48px;
+  transition: all 0.3s ease;
+
+  &.income-segment {
+    --indicator-color: var(--app-income);
+    --indicator-color-checked: var(--app-income);
+  }
+
+  &.expense-segment {
+    --indicator-color: var(--app-expense);
+    --indicator-color-checked: var(--app-expense);
+  }
+}
+
+.segment-icon {
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+
+.segment-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+// Submit Button
+.submit-button {
+  --border-radius: 16px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  --background: var(--ion-color-primary);
+  --color: white;
+  --box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  margin-top: 8px;
+  transition: all 0.3s ease;
+
+  &:hover:not([disabled]) {
+    transform: translateY(-2px);
+    --box-shadow: 0 6px 16px rgba(var(--ion-color-primary-rgb), 0.4);
+  }
+
+  &[disabled] {
+    --opacity: 0.5;
+  }
+}
+
+// Filter Section
+.filter-card {
+  margin-bottom: 32px;
+}
+
+.filter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+// Movements List
+.list-card {
+  margin-bottom: 32px;
+}
+
+.movements-list {
+  padding: 0 16px 16px 16px;
+}
+
+.movement-item {
+  background: var(--app-card-background);
+  border-radius: 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--app-border-light);
+  transition: all 0.3s ease;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px var(--app-shadow);
+    border-color: var(--ion-color-primary-tint);
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.movement-content {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  gap: 16px;
+}
+
+.movement-icon-container {
+  flex-shrink: 0;
+}
+
+.movement-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: bold;
+  
+  &.income-icon {
+    background: rgba(52, 211, 153, 0.15);
+    color: var(--app-income);
+  }
+  
+  &.expense-icon {
+    background: rgba(248, 113, 113, 0.15);
+    color: var(--app-expense);
+  }
+}
+
+.movement-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.movement-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.movement-description {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--app-text-primary);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.movement-amount {
+  font-size: 1.2rem;
+  font-weight: 700;
+  
+  &.income-amount {
+    color: var(--app-income);
+  }
+  
+  &.expense-amount {
+    color: var(--app-expense);
+  }
+}
+
+.movement-meta {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.movement-category,
+.movement-date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.meta-icon {
+  font-size: 0.9rem;
+  color: var(--app-text-tertiary);
+}
+
+.meta-text {
+  font-size: 0.85rem;
+  color: var(--app-text-secondary);
+  font-weight: 500;
+}
+
+.movement-actions {
   display: flex;
   gap: 8px;
-  margin-left: auto;
+  flex-shrink: 0;
 }
 
-ion-button {
-  --border-radius: 20px;
-  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  transition: transform 0.2s ease-in-out, background 0.3s ease-in-out;
+.action-button {
+  --color: var(--app-text-secondary);
+  --background: transparent;
+  --border-radius: 8px;
+  --box-shadow: none;
+  width: 36px;
+  height: 36px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &.edit-button:hover {
+    --color: var(--ion-color-primary);
+    --background: rgba(var(--ion-color-primary-rgb), 0.1);
+  }
+
+  &.delete-button:hover {
+    --color: var(--app-expense);
+    --background: rgba(248, 113, 113, 0.1);
+  }
 }
 
-.edit-btn {
-  --color: #00d1b2; // turquesa suave
-  --border-color: #00d1b2;
+// Empty State
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--app-text-secondary);
 }
 
-.edit-btn:hover {
-  transform: scale(1.05);
-  --background: rgba(0, 209, 178, 0.1);
+.empty-icon {
+  font-size: 4rem;
+  color: var(--app-text-tertiary);
+  margin-bottom: 16px;
 }
 
-.delete-btn {
-  --color: #ff5f5f;
-  --border-color: #ff5f5f;
+.empty-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--app-text-primary);
+  margin: 0 0 8px 0;
 }
 
-.delete-btn:hover {
-  transform: scale(1.05);
-  --background: rgba(255, 95, 95, 0.1);
-}
-.futuristic-bg {
-  --background: linear-gradient(135deg, #1f1c2c, #928dab);
-  background: var(--background);
-  color: #ffffff;
-  min-height: 100%;
+.empty-subtitle {
+  font-size: 1rem;
+  color: var(--app-text-secondary);
+  margin: 0;
+  line-height: 1.5;
 }
 
-.glass-toolbar {
-  backdrop-filter: blur(8px);
-  background: rgba(30, 30, 30, 0.6);
-  --border-width: 0;
-  --color: #fff;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+// Animations
+.fade-in {
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+  transform: translateY(20px);
 }
 
-.glass-card {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 20px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #f1f1f1;
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.income {
-  color: #00ffbf;
+// Responsive Design
+@media (max-width: 768px) {
+  .transactions-container {
+    padding: 12px;
+  }
+
+  .welcome-title {
+    font-size: 1.6rem;
+  }
+
+  .welcome-subtitle {
+    font-size: 1rem;
+  }
+
+  .form-content, .filter-content {
+    padding: 20px;
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .movement-content {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .movement-main {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .movement-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .movement-actions {
+    margin-top: 8px;
+  }
 }
 
-.expense {
-  color: #ff6b6b;
+@media (max-width: 480px) {
+  .welcome-section {
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+
+  .welcome-title {
+    font-size: 1.4rem;
+  }
+
+  .modern-form {
+    gap: 20px;
+  }
+
+  .movement-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+
+  .movement-description {
+    font-size: 1rem;
+  }
+
+  .movement-amount {
+    font-size: 1.1rem;
+  }
 }
 
-.positive {
-  color: #00ffc6;
-}
-
-.negative {
-  color: #ff4e4e;
-}
-
-.neon-btn {
-  --box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
-  font-weight: bold;
-  letter-spacing: 0.5px;
-  transition: transform 0.2s ease-in-out;
-}
-
-.neon-btn:hover {
-  transform: scale(1.03);
-  filter: brightness(1.2);
+// Dark theme adjustments
+.dark-theme {
+  .modern-input {
+    --background: rgba(255, 255, 255, 0.03);
+  }
+  
+  .movement-item {
+    --background: rgba(255, 255, 255, 0.02);
+  }
 }

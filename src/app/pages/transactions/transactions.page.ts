@@ -1,156 +1,316 @@
-import { Component } from '@angular/core';
+// src/app/pages/transactions/transactions.page.ts
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule, AlertController, LoadingController, ToastController } from '@ionic/angular';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MovementsService, Movement } from '../../services/movements.service';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { IonicModule, AlertController, ToastController } from '@ionic/angular';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Observable, Subscription, BehaviorSubject, combineLatest } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+import { MovementsService } from '../../services/movements.service';
 import { AuthService } from '../../services/auth.service';
 
-import { map } from 'rxjs/operators';
-import { Timestamp } from '@firebase/firestore';
-
+export interface Movement {
+  id?: string;
+  amount: number;
+  description: string;
+  category: string;
+  type: 'income' | 'expense';
+  date: Date;
+  userId: string;
+}
 
 @Component({
   selector: 'app-transactions',
   templateUrl: './transactions.page.html',
   styleUrls: ['./transactions.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, FormsModule, ReactiveFormsModule]
+  imports: [CommonModule, IonicModule, ReactiveFormsModule]
 })
-export class TransactionsPage {
-  movements$!: Observable<Movement[]>;
+export class TransactionsPage implements OnInit, OnDestroy {
+  addForm!: FormGroup;
+  filterForm!: FormGroup;
+  
+  private movementsSubject = new BehaviorSubject<Movement[]>([]);
+  private filterSubject = new BehaviorSubject<{type: string, category: string}>({type: '', category: ''});
+  
+  movements$ = this.movementsSubject.asObservable();
   filteredMovements$!: Observable<Movement[]>;
-  userId: string = '';
-  addForm: FormGroup;
-  filterForm: FormGroup;
-  private filterSubject = new BehaviorSubject<{ type: string; category: string; date: string }>({
-    type: '',
-    category: '',
-    date: ''
-  });
+  
+  private subscription?: Subscription;
+  private currentUserId?: string;
 
+  // Mapeo de categorías
+  private categoryMap: { [key: string]: string } = {
+    'comida': '🍔 Comida',
+    'transporte': '🚗 Transporte',
+    'salud': '🩺 Salud',
+    'educacion': '📚 Educación',
+    'entretenimiento': '🎮 Entretenimiento',
+    'compras': '🛒 Compras',
+    'otros': '📦 Otros'
+  };
 
   constructor(
+    private fb: FormBuilder,
     private movementsService: MovementsService,
     private authService: AuthService,
-    private fb: FormBuilder,
-    private alertCtrl: AlertController,
-    private loadingCtrl: LoadingController,
-    private toastCtrl: ToastController
+    private alertController: AlertController,
+    private toastController: ToastController
   ) {
+    this.initializeForms();
+    this.setupFilteredMovements();
+  }
+
+  ngOnInit() {
+    this.loadCurrentUser();
+    this.setupFilterSubscription();
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
+
+  private initializeForms() {
+    // Formulario para agregar movimientos
     this.addForm = this.fb.group({
       amount: ['', [Validators.required, Validators.min(0.01)]],
-      description: ['', Validators.required],
+      description: ['', [Validators.required, Validators.minLength(3)]],
       category: ['', Validators.required],
       type: ['expense', Validators.required],
       date: [new Date().toISOString(), Validators.required]
     });
 
+    // Formulario para filtros
     this.filterForm = this.fb.group({
       type: [''],
-      category: [''],
-      date: ['']
-    });
-
-    this.initUser();
-    this.filterForm.valueChanges.subscribe(value => {
-      this.filterSubject.next(value);
+      category: ['']
     });
   }
 
-   async initUser() {
-    const user = await this.authService.getCurrentUser();
-    if (user) {
-      this.userId = user.uid;
-      this.movements$ = this.movementsService.getMovements(this.userId).pipe(
-        map(movements =>
-          movements.map(mov => ({
-            ...mov,
-            date: mov.date instanceof Timestamp ? mov.date.toDate() : mov.date
-          }))
-        )
-      );
+  private setupFilteredMovements() {
+    this.filteredMovements$ = combineLatest([
+      this.movements$,
+      this.filterSubject.asObservable()
+    ]).pipe(
+      map(([movements, filters]) => {
+        return movements.filter(movement => {
+          const typeMatch = !filters.type || movement.type === filters.type;
+          const categoryMatch = !filters.category || movement.category === filters.category;
+          return typeMatch && categoryMatch;
+        });
+      })
+    );
+  }
 
-      // Combinamos movimientos con filtros
-      this.filteredMovements$ = combineLatest([this.movements$, this.filterSubject]).pipe(
-        map(([movements, filter]) => {
-          return movements.filter(mov => {
-            const matchType = filter.type ? mov.type === filter.type : true;
-            const matchCategory = filter.category ? mov.category === filter.category : true;
-            const matchDate = filter.date
-              ? new Date(mov.date).toDateString() === new Date(filter.date).toDateString()
-              : true;
-
-            return matchType && matchCategory && matchDate;
-          });
-        })
-      );
+  private async loadCurrentUser() {
+    try {
+      const user = await this.authService.getCurrentUser();
+      if (user) {
+        this.currentUserId = user.uid;
+        this.loadMovements();
+      }
+    } catch (error) {
+      console.error('Error loading user:', error);
+      this.showToast('Error al cargar usuario', 'danger');
     }
   }
 
-  async addMovement() {
-    if (this.addForm.invalid) return;
+  private loadMovements() {
+    if (!this.currentUserId) return;
 
-    const loading = await this.loadingCtrl.create({ message: 'Guardando...' });
-    await loading.present();
+    this.subscription = this.movementsService.getMovements(this.currentUserId)
+      .subscribe({
+        next: (movements) => {
+          // Ordenar por fecha (más recientes primero)
+          const sortedMovements = movements.sort((a, b) => {
+            const dateA = this.parseDate(a.date);
+            const dateB = this.parseDate(b.date);
+            return dateB.getTime() - dateA.getTime();
+          });
+          this.movementsSubject.next(sortedMovements);
+        },
+        error: (error) => {
+          console.error('Error loading movements:', error);
+          this.showToast('Error al cargar movimientos', 'danger');
+        }
+      });
+  }
 
-    const formValue = this.addForm.value;
-    const movement: Movement = {
-      amount: parseFloat(formValue.amount),
-      description: formValue.description,
-      category: formValue.category,
-      type: formValue.type,
-      date: new Date(formValue.date),
-      userId: this.userId
-    };
-
-    this.movementsService.addMovement(movement).then(() => {
-      loading.dismiss();
-      this.addForm.reset({ type: 'expense', date: new Date().toISOString() });
-      this.showToast('Movimiento agregado');
-    }).catch(err => {
-      loading.dismiss();
-      this.showToast('Error al guardar movimiento');
-      console.error(err);
+  private setupFilterSubscription() {
+    this.filterForm.valueChanges.subscribe(filters => {
+      this.filterSubject.next(filters);
     });
   }
 
-  async deleteMovement(id: string | undefined) {
-    if (!id) return;
-    const alert = await this.alertCtrl.create({
-      header: 'Confirmar eliminación',
-      message: '¿Estás seguro que quieres eliminar este movimiento?',
+  private parseDate(date: any): Date {
+    if (date instanceof Date) return date;
+    if (date?.toDate) return date.toDate();
+    if (date?.seconds) return new Date(date.seconds * 1000);
+    return new Date(date);
+  }
+
+  async addMovement() {
+    if (this.addForm.valid && this.currentUserId) {
+      try {
+        const formValue = this.addForm.value;
+        const movement: Movement = {
+          amount: parseFloat(formValue.amount),
+          description: formValue.description.trim(),
+          category: formValue.category,
+          type: formValue.type,
+          date: new Date(formValue.date),
+          userId: this.currentUserId
+        };
+
+        await this.movementsService.addMovement(movement);
+        this.addForm.reset({
+          type: 'expense',
+          date: new Date().toISOString()
+        });
+        
+        await this.showToast('Movimiento agregado exitosamente', 'success');
+      } catch (error) {
+        console.error('Error adding movement:', error);
+        await this.showToast('Error al agregar movimiento', 'danger');
+      }
+    } else {
+      await this.showToast('Por favor completa todos los campos correctamente', 'warning');
+    }
+  }
+
+  async editMovement(movement: Movement) {
+    const alert = await this.alertController.create({
+      header: 'Editar Movimiento',
+      inputs: [
+        {
+          name: 'amount',
+          type: 'number',
+          placeholder: 'Monto',
+          value: movement.amount.toString()
+        },
+        {
+          name: 'description',
+          type: 'text',
+          placeholder: 'Descripción',
+          value: movement.description
+        }
+      ],
       buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        { 
-          text: 'Eliminar', 
-          handler: async () => {
-            try {
-              await this.movementsService.deleteMovement(id);
-              this.showToast('Movimiento eliminado');
-            } catch (error) {
-              this.showToast('Error al eliminar movimiento');
-              console.error(error);
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Guardar',
+          handler: async (data) => {
+            if (data.amount && data.description && movement.id) {
+              try {
+                const updatedMovement: Movement = {
+                  ...movement,
+                  amount: parseFloat(data.amount),
+                  description: data.description.trim()
+                };
+
+                await this.movementsService.updateMovement(updatedMovement);
+                await this.showToast('Movimiento actualizado', 'success');
+              } catch (error) {
+                console.error('Error updating movement:', error);
+                await this.showToast('Error al actualizar movimiento', 'danger');
+              }
+            } else {
+              await this.showToast('Datos inválidos', 'warning');
             }
           }
         }
       ]
     });
+
     await alert.present();
   }
 
-  // Deja pendiente para que armes un modal o formulario para editar
-  editMovement(movement: Movement) {
-    // Aquí podrías abrir un modal o rellenar el formulario para edición
-    console.log('Editar movimiento:', movement);
+  async deleteMovement(movementId?: string) {
+    if (!movementId) return;
+
+    const alert = await this.alertController.create({
+      header: 'Confirmar eliminación',
+      message: '¿Estás seguro de que quieres eliminar este movimiento?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Eliminar',
+          role: 'destructive',
+          handler: async () => {
+            try {
+              await this.movementsService.deleteMovement(movementId);
+              await this.showToast('Movimiento eliminado', 'success');
+            } catch (error) {
+              console.error('Error deleting movement:', error);
+              await this.showToast('Error al eliminar movimiento', 'danger');
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
-  async showToast(message: string) {
-    const toast = await this.toastCtrl.create({
+  getCategoryName(category: string): string {
+    return this.categoryMap[category] || category;
+  }
+
+  trackByMovement(index: number, movement: Movement): any {
+    return movement.id || index;
+  }
+
+  private async showToast(message: string, color: 'success' | 'danger' | 'warning') {
+    const toast = await this.toastController.create({
       message,
-      duration: 2000,
-      position: 'bottom'
+      duration: 3000,
+      position: 'top',
+      color,
+      buttons: [
+        {
+          text: 'X',
+          role: 'cancel'
+        }
+      ]
     });
-    toast.present();
+    await toast.present();
+  }
+
+  // Métodos auxiliares para validación de formularios
+  get amountError(): boolean {
+    const control = this.addForm.get('amount');
+    return !!(control?.touched && control?.invalid);
+  }
+
+  get descriptionError(): boolean {
+    const control = this.addForm.get('description');
+    return !!(control?.touched && control?.invalid);
+  }
+
+  get categoryError(): boolean {
+    const control = this.addForm.get('category');
+    return !!(control?.touched && control?.invalid);
+  }
+
+  // Método para limpiar filtros
+  clearFilters() {
+    this.filterForm.reset();
+  }
+
+  // Método para refrescar datos
+  async refreshData(event?: any) {
+    this.loadMovements();
+    if (event) {
+      setTimeout(() => {
+        event.target.complete();
+      }, 1000);
+    }
   }
 }

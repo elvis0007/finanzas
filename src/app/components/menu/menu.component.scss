@@ -1,54 +1,299 @@
-.futuristic-menu {
-  --background: rgba(20, 20, 30, 0.8);
-  backdrop-filter: blur(12px);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-  color: #00ffe7;
-  font-weight: 600;
+// src/app/components/menu/menu.component.scss
+.modern-menu {
+  --background: var(--app-surface);
+  --width: 280px;
+  border-right: 1px solid var(--app-border);
 }
 
-.glass-toolbar {
-  --background: rgba(15, 15, 25, 0.7);
-  backdrop-filter: blur(10px);
-  color: #00ffd5;
-  font-weight: bold;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-  letter-spacing: 1px;
+.modern-toolbar {
+  --background: var(--app-glass-background);
+  --color: var(--app-text-primary);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--app-border-light);
+  padding: 8px 0;
+}
+
+.menu-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--ion-color-primary);
+  letter-spacing: 0.5px;
+
+  ion-icon {
+    font-size: 1.6rem;
+    margin-right: 8px;  
+    color: var(--ion-color-secondary);
+  }
+}
+
+.menu-content {
+  --background: var(--app-surface);
+  padding: 16px 0;
+}
+
+.menu-section {
+  margin-bottom: 24px;
+}
+
+.menu-list {
+  background: transparent;
+  padding: 0;
 }
 
 .menu-item {
   --background: transparent;
-  color: #00d0c9;
-  font-size: 1.1rem;
-  border-radius: 8px;
-  margin: 4px 8px;
+  --color: var(--app-text-primary);
+  --border-radius: 12px;
+  --inner-padding-end: 16px;
+  --inner-padding-start: 16px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  margin: 4px 16px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 
-  ion-icon {
-    color: #00ffe7;
-    font-size: 22px;
-    margin-right: 12px;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, var(--ion-color-primary), var(--ion-color-secondary));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
   }
 
   &:hover {
-    background: rgba(0, 255, 230, 0.15);
-    color: #00fff0;
-    cursor: pointer;
-    transform: translateX(5px);
-    transition: all 0.25s ease-in-out;
+    --background: var(--app-surface-variant);
+    transform: translateX(8px);
+    box-shadow: 0 4px 12px var(--app-shadow-light);
+
+    &::before {
+      opacity: 0.1;
+    }
+
+    .menu-icon {
+      transform: scale(1.1);
+      color: var(--ion-color-primary);
+    }
+
+    .menu-label {
+      color: var(--ion-color-primary);
+      font-weight: 600;
+    }
+  }
+
+  &.ion-activated {
+    --background: var(--app-surface-variant);
+    
+    &::before {
+      opacity: 0.15;
+    }
+
+    .menu-icon {
+      color: var(--ion-color-primary);
+    }
+
+    .menu-label {
+      color: var(--ion-color-primary);
+      font-weight: 600;
+    }
   }
 }
 
-.logout-item {
-  color: #ff4c4c;
-  font-weight: 700;
+.menu-icon {
+  font-size: 1.3rem;
+  color: var(--app-text-secondary);
+  margin-right: 12px;
+  transition: all 0.3s ease;
+}
 
-  ion-icon {
-    color: #ff4c4c;
+.menu-label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--app-text-primary);
+  transition: all 0.3s ease;
+}
+
+// Avatar styles - corregido para ser más pequeño
+.menu-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--ion-color-primary-tint);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
+}
+
+// Badge para transacciones pendientes
+.menu-badge {
+  background: var(--ion-color-danger);
+  color: white;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  min-width: 20px;
+  text-align: center;
+}
+
+// Progress ring para objetivos
+.menu-progress {
+  width: 24px;
+  height: 24px;
+  position: relative;
+}
+
+.progress-ring {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--ion-color-light);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ion-color-success), var(--ion-color-secondary));
+  transition: width 0.3s ease;
+}
+
+// Theme Section
+.theme-section {
+  margin: 32px 0 24px 0;
+  padding: 0 16px;
+}
+
+.section-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--app-text-secondary);
+  margin-bottom: 12px;
+  padding-left: 16px;
+}
+
+.theme-toggle-item {
+  --background: transparent;
+  --color: var(--app-text-primary);
+  --border-radius: 12px;
+  --inner-padding-end: 16px;
+  --inner-padding-start: 16px;
+  --padding-start: 0;
+  --padding-end: 0;
+  border-radius: 12px;
+  transition: all 0.3s ease;
 
   &:hover {
-    background: rgba(255, 76, 76, 0.25);
-    color: #ff6a6a;
-    transform: translateX(5px);
-    transition: all 0.25s ease-in-out;
+    --background: var(--app-surface-variant);
+  }
+}
+
+.theme-icon-container {
+  display: flex;
+  align-items: center;
+  margin-right: 12px;
+}
+
+.theme-icon {
+  font-size: 1.3rem;
+  color: var(--ion-color-tertiary);
+  transition: all 0.3s ease;
+}
+
+.theme-toggle {
+  --background: var(--app-border);
+  --background-checked: var(--ion-color-primary);
+  --handle-background: #ffffff;
+  --handle-background-checked: #ffffff;
+  transform: scale(0.9);
+}
+
+// Logout Section
+.logout-section {
+  margin-top: auto;
+  padding: 16px 0;
+  border-top: 1px solid var(--app-border-light);
+}
+
+.logout-item {
+  --color: var(--ion-color-danger);
+  font-weight: 600;
+
+  &:hover {
+    --background: rgba(239, 68, 68, 0.1);
+    
+    .logout-icon {
+      color: var(--ion-color-danger);
+      transform: scale(1.1);
+    }
+
+    .menu-label {
+      color: var(--ion-color-danger);
+    }
+  }
+}
+
+.logout-icon {
+  font-size: 1.3rem;
+  color: var(--ion-color-danger);
+  margin-right: 12px;
+  transition: all 0.3s ease;
+}
+
+// Animaciones
+.slide-in {
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: slideInFromLeft 0.6s ease forwards;
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .modern-menu {
+    --width: 260px;
+  }
+  
+  .menu-title {
+    font-size: 1.2rem;
+  }
+  
+  .menu-item {
+    margin: 2px 12px;
+    --padding-start: 12px;
+    --padding-end: 12px;
+  }
+
+  .menu-avatar {
+    width: 28px;
+    height: 28px;
   }
 }

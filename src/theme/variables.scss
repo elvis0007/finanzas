@@ -1,2 +1,214 @@
-// For information on how to create your own theme, please see:
+// src/theme/variables.scss
+// Ionic Variables and Theming. For more info, please see:
 // http://ionicframework.com/docs/theming/
+
+/** Ionic CSS Variables **/
+:root {
+  // Light Theme Variables
+  --ion-color-primary: #6366F1;
+  --ion-color-primary-rgb: 99, 102, 241;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #5856d4;
+  --ion-color-primary-tint: #7376f2;
+
+  --ion-color-secondary: #34D399;
+  --ion-color-secondary-rgb: 52, 211, 153;
+  --ion-color-secondary-contrast: #000000;
+  --ion-color-secondary-contrast-rgb: 0, 0, 0;
+  --ion-color-secondary-shade: #2eb883;
+  --ion-color-secondary-tint: #48d7a4;
+
+  --ion-color-tertiary: #F87171;
+  --ion-color-tertiary-rgb: 248, 113, 113;
+  --ion-color-tertiary-contrast: #000000;
+  --ion-color-tertiary-contrast-rgb: 0, 0, 0;
+  --ion-color-tertiary-shade: #da6464;
+  --ion-color-tertiary-tint: #f97f7f;
+
+  --ion-color-success: #34D399;
+  --ion-color-warning: #FBBF24;
+  --ion-color-danger: #F87171;
+  --ion-color-light: #F9FAFB;
+  --ion-color-medium: #9CA3AF;
+  --ion-color-dark: #374151;
+
+  // Custom App Variables - Light Theme
+  --app-background: #FFFFFF;
+  --app-background-secondary: #F9FAFB;
+  --app-surface: #FFFFFF;
+  --app-surface-variant: #F3F4F6;
+  
+  --app-text-primary: #374151;
+  --app-text-secondary: #6B7280;
+  --app-text-disabled: #9CA3AF;
+  
+  --app-border: #E5E7EB;
+  --app-border-light: #F3F4F6;
+  
+  --app-shadow: rgba(0, 0, 0, 0.1);
+  --app-shadow-light: rgba(0, 0, 0, 0.05);
+  
+  // Glass effect for cards
+  --app-glass-background: rgba(255, 255, 255, 0.8);
+  --app-glass-border: rgba(255, 255, 255, 0.2);
+  --app-glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  
+  // Income/Expense colors
+  --app-income: #34D399;
+  --app-expense: #F87171;
+  --app-balance-positive: #10B981;
+  --app-balance-negative: #EF4444;
+}
+
+// Dark Theme Variables
+.dark-theme {
+  --ion-color-primary: #7C3AED;
+  --ion-color-primary-rgb: 124, 58, 237;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #6D28D9;
+  --ion-color-primary-tint: #8B5CF6;
+
+  --ion-color-secondary: #10B981;
+  --ion-color-secondary-rgb: 16, 185, 129;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #059669;
+  --ion-color-secondary-tint: #34D399;
+
+  --ion-color-tertiary: #F59E0B;
+  --ion-color-tertiary-rgb: 245, 158, 11;
+  --ion-color-tertiary-contrast: #000000;
+  --ion-color-tertiary-contrast-rgb: 0, 0, 0;
+  --ion-color-tertiary-shade: #D97706;
+  --ion-color-tertiary-tint: #FBBF24;
+
+  --ion-color-success: #10B981;
+  --ion-color-warning: #F59E0B;
+  --ion-color-danger: #EF4444;
+  --ion-color-light: #374151;
+  --ion-color-medium: #6B7280;
+  --ion-color-dark: #F9FAFB;
+
+  // Custom App Variables - Dark Theme
+  --app-background: #0F172A;
+  --app-background-secondary: #1E293B;
+  --app-surface: #1E293B;
+  --app-surface-variant: #334155;
+  
+  --app-text-primary: #F1F5F9;
+  --app-text-secondary: #CBD5E1;
+  --app-text-disabled: #64748B;
+  
+  --app-border: #334155;
+  --app-border-light: #475569;
+  
+  --app-shadow: rgba(0, 0, 0, 0.3);
+  --app-shadow-light: rgba(0, 0, 0, 0.2);
+  
+  // Glass effect for cards - Dark theme
+  --app-glass-background: rgba(30, 41, 59, 0.8);
+  --app-glass-border: rgba(148, 163, 184, 0.1);
+  --app-glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  
+  // Income/Expense colors - Dark theme
+  --app-income: #10B981;
+  --app-expense: #EF4444;
+  --app-balance-positive: #34D399;
+  --app-balance-negative: #F87171;
+}
+
+// Base styling for smooth transitions
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+// Global styles
+body {
+  background-color: var(--app-background);
+  color: var(--app-text-primary);
+}
+
+// Common component styles
+.modern-card {
+  background: var(--app-glass-background);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--app-glass-border);
+  border-radius: 16px;
+  box-shadow: var(--app-glass-shadow);
+  color: var(--app-text-primary);
+}
+
+.modern-toolbar {
+  --background: var(--app-glass-background);
+  --color: var(--app-text-primary);
+  --border-color: var(--app-border);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--app-border-light);
+}
+
+.modern-button {
+  --background: var(--ion-color-primary);
+  --color: var(--ion-color-primary-contrast);
+  --border-radius: 12px;
+  --box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  
+  &:hover {
+    --box-shadow: 0 6px 16px rgba(var(--ion-color-primary-rgb), 0.4);
+    transform: translateY(-2px);
+  }
+}
+
+.income-text {
+  color: var(--app-income);
+  font-weight: 600;
+}
+
+.expense-text {
+  color: var(--app-expense);
+  font-weight: 600;
+}
+
+.balance-positive {
+  color: var(--app-balance-positive);
+  font-weight: 700;
+}
+
+.balance-negative {
+  color: var(--app-balance-negative);
+  font-weight: 700;
+}
+
+// Animation keyframes
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.slide-in {
+  animation: slideIn 0.4s ease-out;
+}

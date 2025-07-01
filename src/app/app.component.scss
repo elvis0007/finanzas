@@ -1,0 +1,11 @@
+
+// src/app/app.component.scss
+// Estilos globales para transiciones suaves
+ion-app {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// Asegurar que el contenido principal tenga la altura correcta
+ion-router-outlet {
+  height: 100%;
+}
